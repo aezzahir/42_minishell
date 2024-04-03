@@ -1,0 +1,30 @@
+CC = cc
+CFLAGS = -Wall -Werror -Wextra
+LIBFT = libft/libft.a
+SRC_FILES = main.c
+OBJ_FILES = $(SRC_FILES:%.c=%.o)
+EXECUTABLE = minishell
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJ_FILES) $(LIBFT) $(PRINTF)
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBFT):
+	make -C libft all
+
+clean:
+	rm -f $(OBJ_FILES)
+	make -C libft clean
+
+fclean: clean
+	rm -f $(EXECUTABLE)
+	make -C libft fclean
+	make -C ft_printf fclean
+
+re: fclean all
+
+.PHONY: all clean fclean re
