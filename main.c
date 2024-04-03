@@ -1,10 +1,10 @@
-#include "includes/minishell.h"
+#include "minishell.h"
 
 
 int main(int argc, char **argv, char *envp[])
 {
     char *cmd_line;
-    char *prompt = "ohmyminishell~$ ";
+    char *prompt = "mini ~$ ";
 
     (void)argc;
     (void)argv;
@@ -12,7 +12,8 @@ int main(int argc, char **argv, char *envp[])
     while (TRUE)
     {
         cmd_line = readline(prompt);
-        printf(cmd_line);
+        ft_split_args(cmd_line);
+        printf("%s\n", cmd_line);
     }
     return (0);
 }

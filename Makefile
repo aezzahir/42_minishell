@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -lreadline
 LIBFT = libft/libft.a
 SRC_FILES = main.c
 OBJ_FILES = $(SRC_FILES:%.c=%.o)
@@ -8,7 +8,7 @@ EXECUTABLE = minishell
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ_FILES) $(LIBFT) $(PRINTF)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS)  -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
