@@ -18,6 +18,6 @@ typedef struct s_cmd
 	char	*err_file;
 }  cmd_t;
 
-
+void ft_split_args(char *cmd_line);
 
 #endif

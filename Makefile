@@ -1,14 +1,14 @@
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -lreadline
+CFLAGS = -Wall -Werror #-Wextra 
 LIBFT = libft/libft.a
-SRC_FILES = main.c
+SRC_FILES = main.c ./parsing/0_cmdtrim.c
 OBJ_FILES = $(SRC_FILES:%.c=%.o)
 EXECUTABLE = minishell
 
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ_FILES) $(LIBFT) $(PRINTF)
-	$(CC) $(CFLAGS)  -o $@ $^
+	$(CC) $(CFLAGS)  -lreadline -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -23,7 +23,6 @@ clean:
 fclean: clean
 	rm -f $(EXECUTABLE)
 	make -C libft fclean
-	make -C ft_printf fclean
 
 re: fclean all
 
