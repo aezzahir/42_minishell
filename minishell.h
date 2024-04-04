@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft/libft.h"
 
 #define TRUE 1
 #define FALSE 0
+
 
 typedef struct s_cmd
 {
