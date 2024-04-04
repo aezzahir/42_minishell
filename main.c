@@ -13,7 +13,7 @@ int main(int argc, char **argv, char *envp[])
     {
         cmd_line = readline(prompt);
         ft_split_args(cmd_line);
-        printf("%s\n", cmd_line);
+        // printf("%s\n", cmd_line);
     }
     return (0);
 }
