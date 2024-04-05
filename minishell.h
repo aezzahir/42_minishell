@@ -21,5 +21,19 @@ typedef struct s_cmd
 }  cmd_t;
 
 void ft_split_args(char *cmd_line);
+char	*ft_substrdup(const char *str, int *start, int *end);
+
+//
+
+int ft_iswhitespace(char *str, int *start, int *end, char c);
+int ft_isquote(char *str, int *start, int *end, char c);
+int ft_isdquote(char *str, int *start, int *end, char c);
+int ft_ispipe(char *str, int *start, int *end, char c);
+int ft_isoutfile(char *str, int *start, int *end, char c);
+int ft_isinfile(char *str, int *start, int *end, char c);
+int ft_isoutfile_appendmode(char *str, int *start, int *end, char c);
+int ft_isherdoc(char *str, int *start, int *end, char c);
+int ft_isdollar(char *str, int *start, int *end, char c);
+
 
 #endif
