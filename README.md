@@ -1,7 +1,9 @@
-The existence of shells is linked to the very existence of IT.
-At the time, all developers agreed that communicating with a computer using aligned
-1/0 switches was seriously irritating.
-It was only logical that they came up with the idea of creating a software to communicate with a computer using interactive lines of commands in a language somewhat
-close to the human language.
-Thanks to Minishell, you’ll be able to travel through time and come back to problems
-people faced when Windows didn’t exis
+### MINISHELL 
+  - 42 project
+1) Tokenazitions
+The first step is to tokenaize our command line, for this purpuse we have to take care of " ' | > >> < << $ and so one.
+we will tokenize it using two variables int start, int end,
+which they will endicates the start and the end of each tokens.
+and we have helpers functions like handle quote and handle env variables.
+These tokens should be saved in a linked list so they can be parsed later to cmds.
+3) Parsing.
