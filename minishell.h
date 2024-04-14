@@ -10,14 +10,22 @@
 #define FALSE 0
 
 
+int	g_status;
+
+typedef struct s_prompt
+{
+	t_list	*cmds; // linked list of cmds ... 
+	char	**envp;
+	pid_t	pid;
+}		t_prompt;
+
 typedef struct s_cmd
 {
-    char	*cmd_path;
-    char	*cmd;
-    char	**cmd_args;
-	char	*in_file;
-	char	*out_file;
-}  cmd_t;
+	char	**full_cmd;
+	char	*full_path;
+	int	    infile;
+	int	    outfile;
+}		t_cmd;
 
 void ft_split_args(t_list **tokens_list, char *cmd_line);
 char	*ft_substrdup(const char *str, int *start, int *end);
