@@ -17,10 +17,9 @@ typedef struct s_cmd
     char	**cmd_args;
 	char	*in_file;
 	char	*out_file;
-	char	*err_file;
 }  cmd_t;
 
-void ft_split_args(char *cmd_line);
+void ft_split_args(t_list **tokens_list, char *cmd_line);
 char	*ft_substrdup(const char *str, int *start, int *end);
 
 //

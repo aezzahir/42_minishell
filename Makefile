@@ -15,13 +15,13 @@ $(EXECUTABLE): $(OBJ_FILES) $(LIBFT) $(PRINTF)
 
 $(LIBFT):
 	make -C libft all
+	make -C libft bonus
 
 clean:
 	rm -f $(OBJ_FILES)
 	make -C libft clean
 
-fclean: cleans
-
+fclean: clean
 	rm -f $(EXECUTABLE)
 	make -C libft fclean
 

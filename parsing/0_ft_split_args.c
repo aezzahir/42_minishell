@@ -95,7 +95,17 @@ char *ft_handle_quote(char *input, int *start, int *end)
     }
     return(token);
 }
-void ft_split_args(char *input)
+
+
+
+void ft_add_token(t_list **tokens_list, char *token)
+{
+    ft_lstadd_back(tokens_list, ft_lstnew((void *)token));
+    
+}
+
+
+void ft_split_args(t_list **tokens_list, char *input)
 {
     char *token;
     int start = 0;
@@ -109,7 +119,7 @@ void ft_split_args(char *input)
             {
                 token = ft_substrdup(input, &start, &end);
                 token = ft_handle_envar(token);//to be updated 1111
-                printf("%s\n", token);
+                ft_add_token(tokens_list, token);
             }
             end++;
             start = end;
@@ -118,13 +128,13 @@ void ft_split_args(char *input)
         {
             token = ft_handle_dquote(input, &start, &end);
             token = ft_handle_envar(token);//to be updated 1111
-            printf("%s\n", token); 
+            ft_add_token(tokens_list, token); 
         }
         else if (input[end] == '\'' && (end == 0 || (end > 0 && input[end - 1] == ' '))) // check input[end - 1] accessbility and it is a space;
         {
             token = ft_handle_quote(input, &start, &end);
-            token = ft_handle_envar(token);//to be updated  1111
-            printf("%s\n", token);
+            //token = ft_handle_envar(token);//to be updated  1111
+            ft_add_token(tokens_list, token);
         }
         else if (!ft_strncmp(&input[end], ">>", 2) || !ft_strncmp(&input[end], "<<", 2))
         {
@@ -132,7 +142,7 @@ void ft_split_args(char *input)
             token = ft_substrdup(input, &start, &end);
             start = end;
             token = ft_handle_envar(token);//to be updated  ---1111
-            printf("%s\n", token);
+            ft_add_token(tokens_list, token);
         }
         else if (input[end] == '|' || input[end] == '>' || input[end] == '<')
         {
@@ -140,20 +150,12 @@ void ft_split_args(char *input)
             token = ft_substrdup(input, &start, &end);
             start = end;
             token = ft_handle_envar(token);//to be updated  ---1111
-            printf("%s\n", token);
+            ft_add_token(tokens_list, token);
         }
-        // else if (input[end] == '$')
-        // {
-        //     end = end + 1;
-        //     token = ft_substrdup(input, &start, &end);
-        //    
-        //     start = end;
-        // }
         else
             end++;
-        //printf("start = %d; end = %d\n", start, end);
     }
     token = ft_substrdup(input, &start, &end);
     token = ft_handle_envar(token);//to be updated  ---1111
-    printf("%s\n", token);
+    ft_add_token(tokens_list, token);
 }
