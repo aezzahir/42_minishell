@@ -21,15 +21,16 @@ typedef struct s_prompt
 
 typedef struct s_cmd
 {
-	char	**full_cmd;
-	char	*full_path;
-	int	    infile;
-	int	    outfile;
+	char	**cmd_args;
+	char	*cmd_path;
+	int	    in_fd;
+	int	    out_fd;
 }		t_cmd;
-
+// 0 - tokenazing strings
 void ft_split_args(t_list **tokens_list, char *cmd_line);
 char	*ft_substrdup(const char *str, int *start, int *end);
-
+// 1 - parsing commandes
+void ft_parse_cmds(t_list **tokens_list);
 //
 
 int ft_iswhitespace(char *str, int *start, int *end, char c);
