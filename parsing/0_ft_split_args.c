@@ -155,7 +155,10 @@ void ft_split_args(t_list **tokens_list, char *input)
         else
             end++;
     }
-    token = ft_substrdup(input, &start, &end);
-    token = ft_handle_envar(token);//to be updated  ---1111
-    ft_add_token(tokens_list, token);
+    if (input)
+    {
+        token = ft_substrdup(input, &start, &end);
+        token = ft_handle_envar(token);//to be updated  ---1111
+        ft_add_token(tokens_list, token);
+    }
 }

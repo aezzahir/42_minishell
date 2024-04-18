@@ -8,7 +8,7 @@ EXECUTABLE = minishell
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ_FILES) $(LIBFT) $(PRINTF)
-	$(CC) $(CFLAGS)  -lreadline -o $@ $^
+	$(CC) $(CFLAGS)  -lreadline -o $@ $^ -fsanitize=address
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

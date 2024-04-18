@@ -5,30 +5,26 @@ void ft_print_nodes(void *content)
     printf("%s\n", (char *)content);
 }
 
-void ft_print_prompt(t_prompt *prompt)
+void ft_print_prompt(void *content)
 {
-    t_cmd *cmd;
-    t_list *node;
-    int i;
-   node = prompt->cmds;
-   while (node)
-   {
+   int i;
+   t_cmd *cmd;
+  
     i = 0;
-    cmd = (t_cmd *)(node->content);
+    cmd = (t_cmd *)content;
     while (cmd->cmd_args[i])
     {
-        printf("%s - ", cmd->cmd_args[i]);
+        printf("%s ", cmd->cmd_args[i]);
         i++;
     }
-    node = node->next;
-   }
-   
+    printf("\n");
 }
 
 int main(int argc, char **argv, char *envp[])
 {
     t_list *tokens_list;
-    t_prompt prompt;
+    //t_prompt prompt;
+    t_list *cmds;
     char *cmd_line;
     char *prompt_str = "mini ~$ ";
 
@@ -41,9 +37,10 @@ int main(int argc, char **argv, char *envp[])
         if (ft_strlen (cmd_line))
             add_history(cmd_line);
         ft_split_args(&tokens_list, cmd_line);
-        ft_lstiter(tokens_list, ft_print_nodes);
-        ft_parse_cmds(&prompt, &tokens_list);
-        //ft_lstclear(&tokens_list, free);
+        //ft_lstiter(tokens_list, ft_print_nodes);
+        cmds = get_cmds_list(tokens_list);
+        ft_lstiter(cmds, ft_print_prompt);
+        ft_lstclear(&tokens_list, free);
     }
     return (0);
 }

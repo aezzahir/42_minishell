@@ -30,7 +30,8 @@ typedef struct s_cmd
 void ft_split_args(t_list **tokens_list, char *cmd_line);
 char	*ft_substrdup(const char *str, int *start, int *end);
 // 1 - parsing commandes
-void ft_parse_cmds(t_prompt *prompt, t_list **tokens_list);
+t_cmd   *ft_parse_cmds(t_list *token);
+t_list *get_cmds_list(t_list *token);
 //
 
 int ft_iswhitespace(char *str, int *start, int *end, char c);
