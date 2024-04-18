@@ -6,6 +6,12 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 
+//
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
+//
 #define TRUE 1
 #define FALSE 0
 

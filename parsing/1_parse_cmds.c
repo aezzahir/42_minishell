@@ -49,7 +49,34 @@ void ft_add_arg_to_cmd(t_cmd **cmd, t_list *token, int args_num)
 
 void ft_handle_special_tok(t_cmd *cmd, t_list *token)
 {
-	printf("special : %s\n", (char *)(token));
+	int fd;
+
+	if (token && ft_is_what(token) == 2 && token->next && token->next->content)
+	{
+		fd = open((char *)token->next->content, O_RDONLY);
+		if (fd < 0)
+			return;
+		cmd->in_fd = fd;
+	}
+	else if (token && ft_is_what(token) == 3 && token->next && token->next->content)
+	{
+		fd = open((char *)token->next->content, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+		if (fd < 0)
+			return;
+		cmd->out_fd = fd;
+	}
+	else if (token && ft_is_what(token) == 4 && token->next && token->next->content)
+	{
+		fd = open((char *)token->next->content, O_CREAT | O_WRONLY | O_APPEND, 0644);
+		if (fd < 0)
+			return;
+		cmd->out_fd = fd;
+	}
+	else if (token && ft_is_what(token) == 5 && token->next && token->next->content)
+	{
+		// handle herdoc 
+		return;
+	}
 }
 t_list *get_cmds_list(t_list *token)
 {
@@ -60,7 +87,7 @@ t_list *get_cmds_list(t_list *token)
 	cmds = NULL;
 	while (token)
 	{
-		if (piping == 0)
+		if (piping == 0 && ft_is_what(token) == 1)
 		{
 			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token)));
 			piping = 1;
@@ -70,11 +97,18 @@ t_list *get_cmds_list(t_list *token)
 			token = token->next;
 			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token)));
 		}
+
 		token = token->next;
 	}
 	return (cmds);
 }
-
+void ft_initilize(t_cmd *cmd)
+{
+	cmd->cmd_args = NULL;
+	cmd->cmd_path = NULL;
+	cmd->in_fd = 0;
+	cmd->out_fd = 1;
+}
 t_cmd   *ft_parse_cmds(t_list *token)
 {
 	t_list  *tmp_tok;
@@ -88,14 +122,18 @@ t_cmd   *ft_parse_cmds(t_list *token)
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if(!cmd)
 		return (NULL);
+	ft_initilize(cmd);
 	args_num = 0;
 	tmp_tok = token;
 	while (ft_is_what(tmp_tok) >= 1)
 	{
 		if (ft_is_what(tmp_tok) == 1)
 			args_num++;
-		else
+		else if (ft_is_what(tmp_tok) >= 2)
+		{
 			ft_handle_special_tok(cmd, tmp_tok);
+			tmp_tok = tmp_tok->next;
+		}
 		tmp_tok = tmp_tok->next;
 	}
 	ft_add_arg_to_cmd(&cmd, token, args_num);

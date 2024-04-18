@@ -17,7 +17,7 @@ void ft_print_prompt(void *content)
         printf("%s ", cmd->cmd_args[i]);
         i++;
     }
-    printf("\n");
+    printf("        in_fd = %d   out_fd = %d \n", cmd->in_fd, cmd->out_fd);
 }
 
 int main(int argc, char **argv, char *envp[])
