@@ -78,6 +78,7 @@ void ft_handle_special_tok(t_cmd *cmd, t_list *token)
 		return;
 	}
 }
+// This function get us the t_list *cmds
 t_list *get_cmds_list(t_list *token)
 {
 	t_list *cmds;
@@ -116,9 +117,7 @@ t_cmd   *ft_parse_cmds(t_list *token)
 	int args_num;
 
 	if (!token)
-	{
 		printf("tokens list is empty!\n");
-	}
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if(!cmd)
 		return (NULL);
@@ -140,5 +139,10 @@ t_cmd   *ft_parse_cmds(t_list *token)
 	return (cmd);
 }
 
-// here I should firts creat a malloc for cmd then fill it with args and the eventual files discriptors then go to the next token or inside the fill args I should instead do fill cmd and fill the cmd automaticcally
-// I have to do a malloc for the cmd then a malloc for the args fill the args then cmd->args =  args ... I should review and rethink about the logic cause i see a lot of repeated stuff 
+void get_paths(t_list *cmds, char **envp)
+{
+	t_list *cmd;
+
+	
+
+}
