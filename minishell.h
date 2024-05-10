@@ -36,10 +36,10 @@ typedef struct s_cmd
 void ft_split_args(t_list **tokens_list, char *cmd_line);
 char	*ft_substrdup(const char *str, int *start, int *end);
 // 1 - parsing commandes
-t_cmd   *ft_parse_cmds(t_list *token);
-t_list *get_cmds_list(t_list *token);
+t_cmd   *ft_parse_cmds(t_list *token, char **envp);
+t_list *get_cmds_list(t_list *token, char **envp);
 //
-
+void	free_split(char **str);
 int ft_iswhitespace(char *str, int *start, int *end, char c);
 int ft_isquote(char *str, int *start, int *end, char c);
 int ft_isdquote(char *str, int *start, int *end, char c);
@@ -49,6 +49,10 @@ int ft_isinfile(char *str, int *start, int *end, char c);
 int ft_isoutfile_appendmode(char *str, int *start, int *end, char c);
 int ft_isherdoc(char *str, int *start, int *end, char c);
 int ft_isdollar(char *str, int *start, int *end, char c);
+
+char *get_path(char *cmd, char **envp);
+char	*find_path(char **arge);
+void get_paths(t_list *list_cmds, char **envp);
 
 
 #endif

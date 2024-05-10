@@ -79,7 +79,7 @@ void ft_handle_special_tok(t_cmd *cmd, t_list *token)
 	}
 }
 // This function get us the t_list *cmds
-t_list *get_cmds_list(t_list *token)
+t_list *get_cmds_list(t_list *token, char **envp)
 {
 	t_list *cmds;
 	int piping;
@@ -90,13 +90,13 @@ t_list *get_cmds_list(t_list *token)
 	{
 		if (piping == 0 && ft_is_what(token) == 1)
 		{
-			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token)));
+			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
 			piping = 1;
 		}
 		else if (ft_is_what(token) == 0)
 		{
 			token = token->next;
-			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token)));
+			ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
 		}
 
 		token = token->next;
@@ -110,7 +110,7 @@ void ft_initilize(t_cmd *cmd)
 	cmd->in_fd = 0;
 	cmd->out_fd = 1;
 }
-t_cmd   *ft_parse_cmds(t_list *token)
+t_cmd   *ft_parse_cmds(t_list *token, char **envp)
 {
 	t_list  *tmp_tok;
 	t_cmd   *cmd;
@@ -136,13 +136,55 @@ t_cmd   *ft_parse_cmds(t_list *token)
 		tmp_tok = tmp_tok->next;
 	}
 	ft_add_arg_to_cmd(&cmd, token, args_num);
+	cmd->cmd_path = get_path(cmd->cmd_args[0], envp); // adding the path of the command;
 	return (cmd);
 }
 
-void get_paths(t_list *cmds, char **envp)
+// getting paths 
+char	*find_path(char **arge)
 {
-	t_list *cmd;
-
-	
-
+	while (*arge)
+	{
+		if (!ft_strncmp("PATH=", *arge, 5))
+			return (*arge + 5);
+		arge++;
+	}
+	return (NULL);
 }
+
+
+
+char *get_path(char *cmd, char **envp)
+{
+    char *tmp;
+    char *path;
+    char **paths;
+    int i;
+
+    if (ft_strchr(cmd, '/') || !find_path(envp) || (cmd && *cmd == '.'))
+        return (ft_strdup(cmd));
+
+    paths = ft_split(find_path(envp), ':');
+    i = 0;
+    while (paths && paths[i])
+    {
+        tmp = ft_strjoin(paths[i], "/");
+        path = ft_strjoin(tmp, cmd);
+        free(tmp);
+        if (access(path, F_OK) == 0)
+        {
+            free_split(paths);
+            return (path);
+        }
+        free(path);
+        i++;
+    }
+    free_split(paths);
+ 
+    return (NULL);
+}
+
+
+
+
+

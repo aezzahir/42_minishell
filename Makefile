@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Werror #-Wextra 
 LIBFT = libft/libft.a
-SRC_FILES = main.c parsing/0_ft_split_args.c parsing/1_parse_cmds.c parsing/ft_substrdup.c
+SRC_FILES = main.c parsing/0_ft_split_args.c parsing/1_parse_cmds.c parsing/ft_substrdup.c parsing/free_split.c
 OBJ_FILES = $(SRC_FILES:%.c=%.o)
 EXECUTABLE = minishell
 

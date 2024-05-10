@@ -17,7 +17,7 @@ void ft_print_prompt(void *content)
         printf("%s ", cmd->cmd_args[i]);
         i++;
     }
-    printf("        in_fd = %d   out_fd = %d \n", cmd->in_fd, cmd->out_fd);
+    printf("        in_fd = %d   out_fd = %d \n cmd_path = %s\n", cmd->in_fd, cmd->out_fd, cmd->cmd_path);
 }
 
 int main(int argc, char **argv, char *envp[])
@@ -38,7 +38,7 @@ int main(int argc, char **argv, char *envp[])
             add_history(cmd_line);
         ft_split_args(&tokens_list, cmd_line);
         //ft_lstiter(tokens_list, ft_print_nodes);
-        cmds = get_cmds_list(tokens_list);
+        cmds = get_cmds_list(tokens_list, envp);
         ft_lstiter(cmds, ft_print_prompt);
         ft_lstclear(&tokens_list, free);
     }
