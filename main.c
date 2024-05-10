@@ -14,7 +14,7 @@ void ft_print_prompt(void *content)
     cmd = (t_cmd *)content;
     while (cmd->cmd_args[i])
     {
-        printf("%s ", cmd->cmd_args[i]);
+        printf("%d: %s   ",i + 1, cmd->cmd_args[i]);
         i++;
     }
     printf("        in_fd = %d   out_fd = %d \n cmd_path = %s\n", cmd->in_fd, cmd->out_fd, cmd->cmd_path);
