@@ -55,4 +55,9 @@ char	*find_path(char **arge);
 void get_paths(t_list *list_cmds, char **envp);
 
 
+/// Excution part :-)
+
+
+int ft_exec(t_list *cmds, char **envp);
+
 #endif
