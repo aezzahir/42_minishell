@@ -22,7 +22,7 @@ char *ft_handle_envar(char *token, char **envp)
         return NULL;
 
     while (token[i]) {
-        if (token[i] == '$')
+        if (token[i] == '$' && token[i + 1] != '?')
         {
             start = i + 1;
             end = start;
@@ -88,9 +88,7 @@ char *ft_exit_status(char *token, int *g_status)
             i = start + ft_strlen(exit_status);
         }
         else
-        {
-            i++;
-        }
+            i++;   
     }
 
     return token;

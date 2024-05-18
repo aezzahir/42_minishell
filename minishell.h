@@ -38,7 +38,7 @@ void ft_add_token(t_list **tokens_list, char *token);
 
 // 1.1 - handles herdoc quotes and enviremental variables
 char	*ft_handle_envar(char *token, char **envp);
-char *ft_handle_heredoc(char *input, int *end);
+char *ft_handle_heredoc(char *input, int *end, char **envp, int *g_status);
 char	*ft_handle_quote(char *input, int *start, int *end, char quote);
 char *ft_exit_status(char *token, int *g_status);
 
