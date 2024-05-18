@@ -31,7 +31,6 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, char **envp)
     pid = fork();
     if (pid == 0)
     {
-        printf("Good 2\n");
         execve(cmd->cmd_path, cmd->cmd_args, envp);
         ft_exit("execve");
     }

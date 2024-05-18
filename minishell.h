@@ -32,23 +32,28 @@ typedef struct s_cmd
 	int	    in_fd;
 	int	    out_fd;
 }		t_cmd;
-// 0 - tokenazing strings
-void ft_split_args(t_list **tokens_list, char *cmd_line);
+// 1 - tokenazing strings
+void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_exit_status);
+void ft_add_token(t_list **tokens_list, char *token);
+
+// 1.1 - handles herdoc quotes and enviremental variables
+char	*ft_handle_envar(char *token, char **envp);
+char *ft_handle_heredoc(char *input, int *end);
+char	*ft_handle_quote(char *input, int *start, int *end, char quote);
+char *ft_exit_status(char *token, int *g_status);
+
 char	*ft_substrdup(const char *str, int *start, int *end);
+
+
+
+
+
+
 // 1 - parsing commandes
 t_cmd   *ft_parse_cmds(t_list *token, char **envp);
 t_list *get_cmds_list(t_list *token, char **envp);
 //
 void	free_split(char **str);
-int ft_iswhitespace(char *str, int *start, int *end, char c);
-int ft_isquote(char *str, int *start, int *end, char c);
-int ft_isdquote(char *str, int *start, int *end, char c);
-int ft_ispipe(char *str, int *start, int *end, char c);
-int ft_isoutfile(char *str, int *start, int *end, char c);
-int ft_isinfile(char *str, int *start, int *end, char c);
-int ft_isoutfile_appendmode(char *str, int *start, int *end, char c);
-int ft_isherdoc(char *str, int *start, int *end, char c);
-int ft_isdollar(char *str, int *start, int *end, char c);
 
 char *get_path(char *cmd, char **envp);
 char	*find_path(char **arge);
@@ -60,4 +65,10 @@ void get_paths(t_list *list_cmds, char **envp);
 
 int ft_exec(t_list *cmds, char **envp);
 
+
+
+
+
+// utility functions 
+int ft_iswhitespace(char c);
 #endif

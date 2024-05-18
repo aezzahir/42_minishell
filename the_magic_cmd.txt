@@ -1,0 +1,36 @@
+echo "Hello $USER" | cat <<<"$(ls -al | grep .c)" | sed 's/.c/.o/' | xargs -I{} make {} > output.txt 2>&1 cat < output.txt | grep -v "Nothing to be done" | sed 's/^/Compiled: /' >> compiled.log < compiled.log cat echo $?
+
+tokens:
+echo
+"Hello $USER"
+|
+cat
+<<<"$(ls -al | grep .c)"
+|
+sed
+s/.c/.o/
+|
+xargs
+-I{}
+make
+{}
+>
+output.txt
+2>&1
+cat
+<
+output.txt
+|
+grep
+-v
+"Nothing to be done"
+|
+sed
+s/^/Compiled: /
+>>
+compiled.log
+<
+compiled.log
+cat
+echo
+$?

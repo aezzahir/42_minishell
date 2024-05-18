@@ -11,7 +11,7 @@ int ft_is_what(t_list *token)
 	token_content = (char *)(token->content);
 	if (!token_content)
 		return (-1);
-	if (ft_strncmp(token_content, "|", ft_strlen(token_content)) == 0)
+	if (ft_strncmp(token_content, "|", ft_strlen(token_content)) == 0) // still not implemeted 
 		return (0);
 	else if (ft_strncmp(token_content, "<", ft_strlen(token_content)) == 0)
 		return (2);
@@ -19,7 +19,7 @@ int ft_is_what(t_list *token)
 		return (3);
 	else if (ft_strncmp(token_content, ">>", ft_strlen(token_content)) == 0)
 		return (4);
-	else if (ft_strncmp(token_content, "<<", ft_strlen(token_content)) == 0)
+	else if (ft_strncmp(token_content, "<<", ft_strlen(token_content)) == 0) // still not implemeted 
 		return (5);
 	else
 		return (1);
@@ -139,52 +139,4 @@ t_cmd   *ft_parse_cmds(t_list *token, char **envp)
 	cmd->cmd_path = get_path(cmd->cmd_args[0], envp); // adding the path of the command;
 	return (cmd);
 }
-
-// getting paths 
-char	*find_path(char **arge)
-{
-	while (*arge)
-	{
-		if (!ft_strncmp("PATH=", *arge, 5))
-			return (*arge + 5);
-		arge++;
-	}
-	return (NULL);
-}
-
-
-
-char *get_path(char *cmd, char **envp)
-{
-    char *tmp;
-    char *path;
-    char **paths;
-    int i;
-
-    if (ft_strchr(cmd, '/') || !find_path(envp) || (cmd && *cmd == '.'))
-        return (ft_strdup(cmd));
-
-    paths = ft_split(find_path(envp), ':');
-    i = 0;
-    while (paths && paths[i])
-    {
-        tmp = ft_strjoin(paths[i], "/");
-        path = ft_strjoin(tmp, cmd);
-        free(tmp);
-        if (access(path, F_OK) == 0)
-        {
-            free_split(paths);
-            return (path);
-        }
-        free(path);
-        i++;
-    }
-    free_split(paths);
- 
-    return (NULL);
-}
-
-
-
-
 
