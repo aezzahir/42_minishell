@@ -24,6 +24,8 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
     int start = 0;
     int end = 0;
 
+    if (ft_handle_parse_errors(input))
+        return;
     while (input && input[end])
     {
         if (ft_iswhitespace(input[end]))
@@ -71,14 +73,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
         }
         else if (input[end] == '<' || input[end] == '>' || input[end] == '|')
         {
-            if (end > start)
-            {
-                token = ft_substrdup(input, &start, &end);
-                token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token, last_exit_status);
-                ft_add_token(tokens_list, token);
-            }
-            start = ++end;
+            start = end++;
             token = ft_substrdup(input, &start, &end);
             ft_add_token(tokens_list, token);
         }
@@ -96,3 +91,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
         ft_add_token(tokens_list, token);
     }
 }
+
+
+
+

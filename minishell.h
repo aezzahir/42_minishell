@@ -35,7 +35,7 @@ typedef struct s_cmd
 // 1 - tokenazing strings
 void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_exit_status);
 void ft_add_token(t_list **tokens_list, char *token);
-
+int ft_handle_parse_errors(char *input);
 // 1.1 - handles herdoc quotes and enviremental variables
 char	*ft_handle_envar(char *token, char **envp);
 char *ft_handle_heredoc(char *input, int *end, char **envp, int *g_status);
