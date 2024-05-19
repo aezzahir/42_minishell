@@ -69,9 +69,9 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
             ft_add_token(tokens_list, token);
             token = ft_handle_heredoc(input, &end);
             start = end;
-            printf("%s\n", token);
             token = ft_exit_status(token);
             token = ft_handle_envar(token, envp);
+            printf("%s\n", token);
             ft_add_token(tokens_list, token);
             
         }
