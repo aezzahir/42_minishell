@@ -23,7 +23,11 @@ char *ft_handle_heredoc(char *input, int *end)
         (*end)++;
 
     delimiter = ft_substrdup(input, &start, end);
-
+    if(!(*delimiter))
+    {
+        free(delimiter);
+        return (NULL);
+    }
     content = ft_strdup("");
     while (1)
     {
