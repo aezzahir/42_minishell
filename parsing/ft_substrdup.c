@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int	g_status;
 /**
  * ft_substrdup -   Allocates (using malloc) and returns a substring of the given string str,
  *                  *starting at index *start and ext*ending up to, but not including, index *end.
@@ -20,8 +20,8 @@ char	*ft_substrdup(const char *str, int *start, int *end)
 	len = ft_strlen(str);
     if (!(*start >= 0 && *end <= len && *start <= *end))
         return (NULL);
-    else
-        len = *end - *start;
+    
+    len = *end - *start;
 	ptr = (char *)malloc((len + 1) * sizeof(char));
 	if (ptr == NULL)
 		return (NULL);

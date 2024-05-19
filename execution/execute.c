@@ -1,4 +1,5 @@
 #include "../minishell.h"
+extern int	g_status;
 static void	ft_exit(char *msg)
 {
 	perror(msg);
@@ -27,7 +28,7 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, char **envp)
     // }
     // else if (pipefd[1] >= 0)
     //     dup2(pipefd[1], STDOUT_FILENO);
-
+    (void)pipefd;
     pid = fork();
     if (pid == 0)
     {

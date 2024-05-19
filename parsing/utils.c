@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int	g_status;
 int ft_iswhitespace(char c)
 {
     // Check if the character is a space, tab, newline, carriage return,

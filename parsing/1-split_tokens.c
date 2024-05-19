@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int g_status;
 /**
  * ft_add_token: Adds a token to the tokens list
  * @tokens_list: Pointer to the tokens list
@@ -16,16 +16,16 @@ void ft_add_token(t_list **tokens_list, char *token)
  * @tokens_list: Pointer to the tokens list
  * @input: Input string
  * @envp: Environment variables array
- * @last_exit_status: Pointer to the last exit status
+ * @g_status: Pointer to the last exit status
  */
-void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_exit_status)
+void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
 {
     char *token;
     int start = 0;
     int end = 0;
 
-    if (ft_handle_parse_errors(input))
-        return;
+    // if (ft_handle_parse_errors(input))
+    //     return;
     while (input && input[end])
     {
         if (ft_iswhitespace(input[end]))
@@ -34,7 +34,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
             {
                 token = ft_substrdup(input, &start, &end);
                 token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token, last_exit_status);
+                token = ft_exit_status(token);
                 ft_add_token(tokens_list, token);
             }
             start = ++end;
@@ -43,7 +43,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
         {
             token = ft_handle_quote(input, &start, &end, input[end]);
             token = ft_handle_envar(token, envp);
-            token = ft_exit_status(token, last_exit_status);
+            token = ft_exit_status(token);
             ft_add_token(tokens_list, token);
         }
         else if (input[end] == '>' && input[end + 1] == '>')
@@ -52,7 +52,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
             {
                 token = ft_substrdup(input, &start, &end);
                 token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token, last_exit_status);
+                token = ft_exit_status(token);
                 ft_add_token(tokens_list, token);
             }
             start = end;
@@ -67,7 +67,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
             token = ft_substrdup(input, &start, &end);
             start = end;
             ft_add_token(tokens_list, token);
-            token = ft_handle_heredoc(input, &end, envp, last_exit_status);
+            token = ft_handle_heredoc(input, &end, envp);
             ft_add_token(tokens_list, token);
             start = end;
         }
@@ -87,7 +87,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp, int *last_e
     {
         token = ft_substrdup(input, &start, &end);
         token = ft_handle_envar(token, envp);
-        token = ft_exit_status(token, last_exit_status);
+        token = ft_exit_status(token);
         ft_add_token(tokens_list, token);
     }
 }

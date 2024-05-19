@@ -1,5 +1,5 @@
 #include "minishell.h"
-
+int	g_status;
 void ft_print_nodes(void *content)
 {
     printf("- %s\n", (char *)content);
@@ -17,7 +17,7 @@ void ft_print_prompt(void *content)
         printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
-    printf("\nin_fd = %d   out_fd = %d \n cmd_path = %s\n", cmd->in_fd, cmd->out_fd, cmd->cmd_path);
+    printf("\ninfile = %s   out_file = %s \n cmd_path = %s\n", cmd->in_file, cmd->out_file, cmd->cmd_path);
 }
 
 int main(int argc, char **argv, char *envp[])
@@ -32,13 +32,14 @@ int main(int argc, char **argv, char *envp[])
     (void)argv;
     (void)envp;
     tokens_list = NULL;
+    g_status = 0;
     while (TRUE)
     {
         cmd_line = readline(prompt_str);
         if (ft_strlen (cmd_line))
         {
             add_history(cmd_line);
-            ft_split_tokens(&tokens_list, cmd_line, envp, &g_status);
+            ft_split_tokens(&tokens_list, cmd_line, envp);
             ft_lstiter(tokens_list, ft_print_nodes);
             //cmds = get_cmds_list(tokens_list, envp);
             // ft_exec(cmds, envp);

@@ -1,5 +1,5 @@
 #include "../../minishell.h"
-
+extern int	g_status;
 /**
  * ft_handle_quote: Handles quoted strings
  * @input: Input string
@@ -29,6 +29,8 @@ char *ft_handle_quote(char *input, int *start, int *end, char quote)
         else
            *end =*end + 1;
     }
-    printf("unclosed quotes\n");
-    return ft_substrdup("", 0, 0);
+    token = ft_substrdup(input, start, end);
+    *end =*end + 1;
+    *start = *end;
+    return (token);
 }

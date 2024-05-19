@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int	g_status;
 char	*find_path(char **arge)
 {
 	while (*arge)

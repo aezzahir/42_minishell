@@ -1,5 +1,5 @@
 #include "../../minishell.h"
-
+extern int	g_status;
 
 /**
  * ft_handle_envar: Replaces environment variable names with their values
@@ -17,12 +17,17 @@ char *ft_handle_envar(char *token, char **envp)
     char *left;
     char *right;
     char *new_token = NULL;
-
+    (void)envp;
     if (!token)
         return NULL;
 
     while (token[i]) {
-        if (token[i] == '$' && token[i + 1] != '?')
+        if (token[i] == '$' && token[i + 1] == '$')
+        {
+            i++;
+            continue;
+        }
+        if (token[i] == '$' && token[i + 1] && token[i + 1] != '?')
         {
             start = i + 1;
             end = start;
@@ -53,7 +58,7 @@ char *ft_handle_envar(char *token, char **envp)
     return token;
 }
 
-char *ft_exit_status(char *token, int *g_status)
+char *ft_exit_status(char *token)
 {
     int i = 0;
     int start = 0;
@@ -67,6 +72,11 @@ char *ft_exit_status(char *token, int *g_status)
 
     while (token[i])
     {
+        if (token[i] == '$' && token[i + 1] == '$')
+        {
+            i++;
+            continue;
+        }
         if (token[i] == '$' && token[i + 1] == '?')
         {
             start = i;
@@ -75,17 +85,15 @@ char *ft_exit_status(char *token, int *g_status)
             left = ft_substr(token, 0, start);
             right = ft_substr(token, end, ft_strlen(token) - end);
             
-            char *exit_status = ft_itoa(*g_status);
+            char *exit_status = ft_itoa(g_status);
             new_token = ft_strjoin(left, exit_status);
             new_token = ft_strjoin(new_token, right);
-
             free(left);
             free(right);
-            free(exit_status);
             free(token);
-
             token = new_token;
             i = start + ft_strlen(exit_status);
+            free(exit_status);
         }
         else
             i++;   

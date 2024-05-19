@@ -1,5 +1,5 @@
 #include "../../minishell.h"
-
+extern int	g_status;
 /**
  * handle_heredoc: Handles here-document redirection
  * @tokens_list: Pointer to the tokens list
@@ -9,7 +9,7 @@
 
 
 
-char *ft_handle_heredoc(char *input, int *end, char **envp, int *g_status)
+char *ft_handle_heredoc(char *input, int *end, char **envp)
 {
     char *delimiter = NULL;
     char *content = NULL;
@@ -36,13 +36,13 @@ char *ft_handle_heredoc(char *input, int *end, char **envp, int *g_status)
             break;
         }
         line = ft_handle_envar(line, envp);
-        line = ft_exit_status(line, g_status);
+        line = ft_exit_status(line);
         content = ft_strjoin(content, line);
         content = ft_strjoin(content, "\n");
         free(line);
     }
     free(delimiter);
     content = ft_handle_envar(content, envp);
-    content = ft_exit_status(content, g_status);
+    content = ft_exit_status(content);
     return content;
 }
