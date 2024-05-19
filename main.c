@@ -24,7 +24,7 @@ int main(int argc, char **argv, char *envp[])
 {
     t_list *tokens_list;
     //t_prompt prompt;
-    //t_list *cmds;
+    t_list *cmds;
     char *cmd_line;
     char *prompt_str = "mini ~$ ";
 
@@ -40,11 +40,11 @@ int main(int argc, char **argv, char *envp[])
         {
             add_history(cmd_line);
             ft_split_tokens(&tokens_list, cmd_line, envp);
-            ft_lstiter(tokens_list, ft_print_nodes);
-            printf("\n");
-            //cmds = get_cmds_list(tokens_list, envp);
+            //ft_lstiter(tokens_list, ft_print_nodes);
+            //printf("\n");
+            cmds = get_cmds_list(tokens_list, envp);
             // ft_exec(cmds, envp);
-            //ft_lstiter(cmds, ft_print_prompt);
+            ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
     }

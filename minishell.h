@@ -60,9 +60,8 @@ t_list *get_cmds_list(t_list *token, char **envp);
 //
 void	free_split(char **str);
 
-char *get_path(char *cmd, char **envp);
+char 	*get_path(char *cmd, char **envp);
 char	*find_path(char **arge);
-void get_paths(t_list *list_cmds, char **envp);
 
 
 /// Excution part :-)
@@ -77,7 +76,7 @@ int ft_exec(t_list *cmds, char **envp);
 // utility functions 
 int ft_iswhitespace(char c);
 int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
-
+int ft_special_token_is_a_file(t_list *token);
 
 
 

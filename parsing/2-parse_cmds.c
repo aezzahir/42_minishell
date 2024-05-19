@@ -1,30 +1,9 @@
 #include "../minishell.h"
 extern int g_status;
 
-int ft_is_special_token(t_list *token)
-{
-    char *token_content;
 
-    if (!token)
-        return (-1);
-    token_content = (char *)(token->content);
-    if (!token_content)
-        return (EMPTY);
-    else if (ft_strncmp(token_content, "|", 2) == 0)
-        return (PIPE);
-    else if (ft_strncmp(token_content, "<", 2) == 0)
-        return (INFILE);
-    else if (ft_strncmp(token_content, ">", 2) == 0)
-        return (TRUNC);
-    else if (ft_strncmp(token_content, ">>", 3) == 0)
-        return (APPEND);
-    else if (ft_strncmp(token_content, "<<", 3) == 0)
-        return (HERDOC);
-    else
-        return (NORMAL);
-}
 
-void ft_add_arg_to_cmd(t_cmd *cmd, t_list *token, int args_num)
+void ft_add_args_to_cmd(t_cmd *cmd, t_list *token, int args_num)
 {
     int i;
 
@@ -58,7 +37,52 @@ void ft_parse_files(t_cmd *cmd, t_list *token)
         token = token->next;
         cmd->out_file_app = ft_strdup((char *)(token->content));
     }
+	else
+		printf("ERROR PARSING FILES\n");
 }
+
+
+
+void ft_initialize(t_cmd *cmd)
+{
+    cmd->cmd_args = NULL;
+    cmd->cmd_path = NULL;
+    cmd->in_file = NULL;
+    cmd->out_file = NULL;
+    cmd->out_file_app = NULL;
+}
+
+t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
+{
+    t_cmd *cmd;
+	t_list *token;
+    int args_num;
+
+    if (!first_token)
+        printf("tokens list is empty!\n");
+    cmd = (t_cmd *)malloc(sizeof(t_cmd));
+    if (!cmd)
+        return (NULL);
+    ft_initialize(cmd);
+    args_num = 0;
+	token = first_token;
+    while (token && ft_is_special_token(token) != PIPE)
+    {
+        if (ft_is_special_token(token) == NORMAL)
+            args_num++;
+        else if (ft_special_token_is_a_file(token))
+        {
+			ft_parse_files(cmd, token);
+			token = token->next;
+		}
+        token = token->next;
+    }
+    ft_add_args_to_cmd(cmd, first_token, args_num);
+    cmd->cmd_path = get_path(cmd->cmd_args[0], envp);
+    return (cmd);
+}
+
+
 
 t_list *get_cmds_list(t_list *token, char **envp)
 {
@@ -77,39 +101,4 @@ t_list *get_cmds_list(t_list *token, char **envp)
             token = token->next;
     }
     return (cmds);
-}
-
-void ft_initialize(t_cmd *cmd)
-{
-    cmd->cmd_args = NULL;
-    cmd->cmd_path = NULL;
-    cmd->in_file = NULL;
-    cmd->out_file = NULL;
-    cmd->out_file_app = NULL;
-}
-
-t_cmd *ft_parse_cmds(t_list *token, char **envp)
-{
-    t_cmd *cmd;
-    int args_num;
-
-    if (!token)
-        printf("tokens list is empty!\n");
-    cmd = (t_cmd *)malloc(sizeof(t_cmd));
-    if (!cmd)
-        return (NULL);
-    ft_initialize(cmd);
-    args_num = 0;
-    while (token && ft_is_special_token(token) != PIPE)
-    {
-        if (ft_is_special_token(token) == NORMAL)
-            args_num++;
-        else if (ft_is_special_token(token) >= INFILE)
-            ft_parse_files(cmd, token);
-        token = token->next;
-    }
-    token = token->next;
-    ft_add_arg_to_cmd(cmd, token, args_num);
-    cmd->cmd_path = get_path(cmd->cmd_args[0], envp);
-    return (cmd);
 }
