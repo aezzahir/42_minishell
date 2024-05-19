@@ -41,10 +41,10 @@ void 		ft_add_token(t_list **tokens_list, char *token);
 
 // 1.1 - handles herdoc quotes and enviremental variables
 char		*ft_handle_envar(char *token, char **envp);
-char 		*ft_handle_heredoc(char *input, int *end, char **envp);
+char 		*ft_handle_heredoc(char *input, int *end);
 char		*ft_handle_quote(char *input, int *start, int *end, char quote);
 char 		*ft_exit_status(char *token);
-int ft_handle_syntax_errors(char *input);
+int 		ft_handle_syntax_errors(t_list **tokens_list);
 
 
 char		*ft_substrdup(const char *str, int *start, int *end);
@@ -76,7 +76,7 @@ int ft_exec(t_list *cmds, char **envp);
 
 // utility functions 
 int ft_iswhitespace(char c);
-
+int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 
 
 

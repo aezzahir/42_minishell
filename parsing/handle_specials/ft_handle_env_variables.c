@@ -50,9 +50,7 @@ char *ft_handle_envar(char *token, char **envp)
                 token = new_token;
             }
         } 
-        else {
-            i++;
-        }
+        i++;
     }
 
     return token;
@@ -77,7 +75,7 @@ char *ft_exit_status(char *token)
             i++;
             continue;
         }
-        if (token[i] == '$' && token[i + 1] == '?')
+        if (token[i] == '$' && token[i + 1] && token[i + 1] == '?')
         {
             start = i;
             end = i + 2;
@@ -95,8 +93,7 @@ char *ft_exit_status(char *token)
             i = start + ft_strlen(exit_status);
             free(exit_status);
         }
-        else
-            i++;   
+        i++;   
     }
 
     return token;

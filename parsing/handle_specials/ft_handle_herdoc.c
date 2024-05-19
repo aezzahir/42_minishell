@@ -9,7 +9,7 @@ extern int	g_status;
 
 
 
-char *ft_handle_heredoc(char *input, int *end, char **envp)
+char *ft_handle_heredoc(char *input, int *end)
 {
     char *delimiter = NULL;
     char *content = NULL;
@@ -35,14 +35,10 @@ char *ft_handle_heredoc(char *input, int *end, char **envp)
             free(line);
             break;
         }
-        line = ft_handle_envar(line, envp);
-        line = ft_exit_status(line);
         content = ft_strjoin(content, line);
         content = ft_strjoin(content, "\n");
         free(line);
     }
     free(delimiter);
-    content = ft_handle_envar(content, envp);
-    content = ft_exit_status(content);
     return content;
 }

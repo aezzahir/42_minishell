@@ -2,53 +2,28 @@
 extern int	g_status;
 
 
-int ft_handle_syntax_errors(char *input)
+int ft_handle_syntax_errors(t_list **tokens_list)
 {
-    int i;
-    int single_quote;
-    int double_quote;
+    t_list *token;
 
-    i = 0;
-    single_quote = 0;
-    double_quote = 0;
-    while (input[i])
+
+    if(!tokens_list)
+        return(FALSE);
+    token = *tokens_list;
+    while (token)
     {
-        if (input[i] == '\'')
-            single_quote = !single_quote;
-        else if (input[i] == '\"')
-            double_quote = !double_quote;
-        else if (input[i] == '|' && !single_quote && !double_quote)
+        if(ft_is_special_token(token) != NORMAL && ( !token->next || ft_is_special_token(token->next) != NORMAL))
         {
-            if (i == 0 || input[i - 1] == '|' || input[i + 1] == '\0' || input[i + 1] == '|')
-            {
-                printf("minishell: syntax error near unexpected token `|'\n");
-                return (1);
-            }
+            ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+            if(token->next)
+                ft_putstr_fd((char *)token->next->content, 2);
+            else
+                ft_putstr_fd("`newline'", 2);
+            ft_putstr_fd("\n", 2);
+            ft_lstclear(tokens_list, free);
+            return (FALSE);
         }
-        else if ((input[i] == '<' || input[i] == '>') && !single_quote && !double_quote)
-        {
-            if ((i > 0 && input[i - 1] == '<') || (input[i + 1] && input[i + 1] == '<'))
-            {
-                printf("minishell: syntax error near unexpected token `<'\n");
-                return (1);
-            }
-            else if ((i > 0 && input[i - 1] == '>') || (input[i + 1] && input[i + 1] == '>'))
-            {
-                printf("minishell: syntax error near unexpected token `>'\n");
-                return (1);
-            }
-            else if (input[i + 1] == '\0' || ft_iswhitespace(input[i + 1]))
-            {
-                printf("minishell: syntax error near unexpected token `newline'\n");
-                return (1);
-            }
-        }
-        i++;
+        token = token->next;
     }
-    if (single_quote || double_quote)
-    {
-        printf("minishell: unclosed quotes\n");
-        return (1);
-    }
-    return (0);
+    return (TRUE);
 }

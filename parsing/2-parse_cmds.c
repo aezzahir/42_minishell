@@ -1,7 +1,7 @@
 #include "../minishell.h"
 extern int g_status;
 
-int ft_is_what(t_list *token)
+int ft_is_special_token(t_list *token)
 {
     char *token_content;
 
@@ -10,15 +10,15 @@ int ft_is_what(t_list *token)
     token_content = (char *)(token->content);
     if (!token_content)
         return (EMPTY);
-    if (ft_strncmp(token_content, "|", ft_strlen(token_content)) == 0)
+    else if (ft_strncmp(token_content, "|", 2) == 0)
         return (PIPE);
-    else if (ft_strncmp(token_content, "<", ft_strlen(token_content)) == 0)
+    else if (ft_strncmp(token_content, "<", 2) == 0)
         return (INFILE);
-    else if (ft_strncmp(token_content, ">", ft_strlen(token_content)) == 0)
+    else if (ft_strncmp(token_content, ">", 2) == 0)
         return (TRUNC);
-    else if (ft_strncmp(token_content, ">>", ft_strlen(token_content)) == 0)
+    else if (ft_strncmp(token_content, ">>", 3) == 0)
         return (APPEND);
-    else if (ft_strncmp(token_content, "<<", ft_strlen(token_content)) == 0)
+    else if (ft_strncmp(token_content, "<<", 3) == 0)
         return (HERDOC);
     else
         return (NORMAL);
@@ -32,7 +32,7 @@ void ft_add_arg_to_cmd(t_cmd *cmd, t_list *token, int args_num)
     if (!cmd->cmd_args)
         return;
     i = 0;
-    while (ft_is_what(token) == NORMAL && i < args_num)
+    while (ft_is_special_token(token) == NORMAL && i < args_num)
     {
         cmd->cmd_args[i] = (char *)(token->content);
         i++;
@@ -43,17 +43,17 @@ void ft_add_arg_to_cmd(t_cmd *cmd, t_list *token, int args_num)
 
 void ft_parse_files(t_cmd *cmd, t_list *token)
 {
-    if (token && ft_is_what(token) == INFILE)
+    if (token && ft_is_special_token(token) == INFILE)
     {
         token = token->next;
         cmd->in_file = ft_strdup((char *)(token->content));
     }
-    else if (token && ft_is_what(token) == TRUNC)
+    else if (token && ft_is_special_token(token) == TRUNC)
     {
         token = token->next;
         cmd->out_file = ft_strdup((char *)(token->content));
     }
-    else if (token && ft_is_what(token) == APPEND)
+    else if (token && ft_is_special_token(token) == APPEND)
     {
         token = token->next;
         cmd->out_file_app = ft_strdup((char *)(token->content));
@@ -67,10 +67,10 @@ t_list *get_cmds_list(t_list *token, char **envp)
     cmds = NULL;
     while (token)
     {
-        if (ft_is_what(token) == NORMAL)
+        if (ft_is_special_token(token) == NORMAL)
         {
             ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
-            while (token && ft_is_what(token) != PIPE)
+            while (token && ft_is_special_token(token) != PIPE)
                 token = token->next;
         }
         if (token)
@@ -100,11 +100,11 @@ t_cmd *ft_parse_cmds(t_list *token, char **envp)
         return (NULL);
     ft_initialize(cmd);
     args_num = 0;
-    while (token && ft_is_what(token) != PIPE)
+    while (token && ft_is_special_token(token) != PIPE)
     {
-        if (ft_is_what(token) == NORMAL)
+        if (ft_is_special_token(token) == NORMAL)
             args_num++;
-        else if (ft_is_what(token) >= INFILE)
+        else if (ft_is_special_token(token) >= INFILE)
             ft_parse_files(cmd, token);
         token = token->next;
     }
