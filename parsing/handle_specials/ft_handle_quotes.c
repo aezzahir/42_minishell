@@ -29,8 +29,7 @@ char *ft_handle_quote(char *input, int *start, int *end, char quote)
         else
            *end =*end + 1;
     }
-    token = ft_substrdup(input, start, end);
     *end =*end + 1;
     *start = *end;
-    return (token);
+    return (NULL);
 }

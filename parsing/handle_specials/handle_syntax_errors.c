@@ -27,3 +27,12 @@ int ft_handle_syntax_errors(t_list **tokens_list)
     }
     return (TRUE);
 }
+
+
+
+void		unclosed_qoutes(t_list **tokens_list)
+{
+    ft_putstr_fd("minishell: syntax error :unclosed quotes ", 2);
+    ft_putstr_fd("\n", 2);
+    ft_lstclear(tokens_list, free);
+}

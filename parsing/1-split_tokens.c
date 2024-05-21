@@ -44,6 +44,8 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
             token = ft_handle_quote(input, &start, &end, input[end]);
             token = ft_handle_envar(token, envp);
             token = ft_exit_status(token);
+            if (!token)
+                return unclosed_qoutes(tokens_list);
             ft_add_token(tokens_list, token);
         }
         else if (input[end] == '>' && input[end + 1] == '>')

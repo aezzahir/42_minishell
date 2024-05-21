@@ -45,7 +45,7 @@ char 		*ft_handle_heredoc(char *input, int *end);
 char		*ft_handle_quote(char *input, int *start, int *end, char quote);
 char 		*ft_exit_status(char *token);
 int 		ft_handle_syntax_errors(t_list **tokens_list);
-
+void		unclosed_qoutes(t_list **tokens_list);
 
 char		*ft_substrdup(const char *str, int *start, int *end);
 
