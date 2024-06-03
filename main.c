@@ -6,7 +6,7 @@ int g_status;
 void ft_print_nodes(void *content)
 {
     (void)((char *)content);
-    // printf("%s _ ", (char *)content);
+    printf("%s, ", (char *)content);
 }
 
 void ft_print_prompt(void *content)
@@ -21,7 +21,14 @@ void ft_print_prompt(void *content)
         // printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
-    // printf("\ninfile = %s   out_file = %s \n cmd_path = %s\n", cmd->in_file, cmd->out_file, cmd->cmd_path);
+    printf("\n cmd_path = %s\n", cmd->cmd_path);
+    printf("\n in_files : ");
+    ft_lstiter(cmd->in_files, ft_print_nodes);
+    printf("\n out_files : ");
+    ft_lstiter(cmd->out_files, ft_print_nodes);
+    printf("\n out_files_app : ");
+    ft_lstiter(cmd->out_files_app, ft_print_nodes);
+    printf("\n");
 }
 
 void handle_sigint(int sig)
@@ -47,7 +54,7 @@ int main(int argc, char **argv, char *envp[])
     t_list *tokens_list;
     t_list *cmds;
     char *cmd_line;
-    char *prompt_str = "mini ~$ ";
+    char *prompt_str = "minishell$ ";
 
     (void)argc;
     (void)argv;
@@ -71,7 +78,7 @@ int main(int argc, char **argv, char *envp[])
             ft_lstiter(tokens_list, ft_print_nodes);
             // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
-            ft_exec(cmds, envp);
+            //ft_exec(cmds, envp);
             ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
