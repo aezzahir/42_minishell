@@ -1,47 +1,82 @@
 #include "../minishell.h"
-extern int	g_status;
-static void	ft_exit(char *msg)
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern int g_status;
+
+static void ft_exit(char *msg)
 {
-	perror(msg);
-	exit(EXIT_FAILURE);
+    perror(msg);
+    exit(EXIT_FAILURE);
 }
-static void ft_pipe_exec(t_cmd *cmd, int *pipefd, char **envp)
+
+bool is_builtin(char *cmd)
+{
+    return (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "echo") == 0 ||
+            ft_strcmp(cmd, "pwd") == 0 || ft_strcmp(cmd, "export") == 0 ||
+            ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "env") == 0 ||
+            ft_strcmp(cmd, "exit") == 0);
+}
+
+static void handle_redirections(t_cmd *cmd)
+{
+    if (cmd->in_file)
+    {
+        handle_input_redirection(cmd->in_file);
+    }
+    if (cmd->out_file)
+    {
+        handle_output_redirection(cmd->out_file);
+    }
+    if (cmd->out_file_app)
+    {
+        handle_append_redirection(cmd->out_file_app);
+    }
+}
+
+static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
 {
     pid_t pid;
-    // int saved_in, saved_out;
 
-    // saved_in = dup(STDIN_FILENO);
-    // saved_out = dup(STDOUT_FILENO);
+    if (is_builtin(cmd->cmd_args[0]))
+    {
+        execute_builtin(cmd->cmd_args);
+        return;
+    }
 
-    // if (cmd->in_fd >= 0)
-    // {
-    //     dup2(cmd->in_fd, STDIN_FILENO);
-    //     close(cmd->in_fd);
-    // }
-    // else if (pipefd[0] >= 0)
-    //     dup2(pipefd[0], STDIN_FILENO);
-
-    // if (cmd->out_fd >= 0)
-    // {
-    //     dup2(cmd->out_fd, STDOUT_FILENO);
-    //     close(cmd->out_fd);
-    // }
-    // else if (pipefd[1] >= 0)
-    //     dup2(pipefd[1], STDOUT_FILENO);
-    (void)pipefd;
     pid = fork();
     if (pid == 0)
     {
+        // Handle input from the previous pipe
+        if (prev_pipe_out != -1)
+        {
+            dup2(prev_pipe_out, STDIN_FILENO);
+            close(prev_pipe_out);
+        }
+
+        // Handle output to the next pipe
+        if (pipefd[1] != -1)
+        {
+            dup2(pipefd[1], STDOUT_FILENO);
+            close(pipefd[1]);
+        }
+
+        // Handle redirections if any
+        if (cmd->in_file || cmd->out_file || cmd->out_file_app)
+        {
+            handle_redirections(cmd);
+        }
+
         execve(cmd->cmd_path, cmd->cmd_args, envp);
         ft_exit("execve");
     }
     else if (pid < 0)
+    {
         ft_exit("fork");
+    }
 
-    // dup2(saved_in, STDIN_FILENO);
-    // dup2(saved_out, STDOUT_FILENO);
-    // close(saved_in);
-    // close(saved_out);
     waitpid(pid, NULL, 0);
 }
 
@@ -57,20 +92,28 @@ int ft_exec(t_list *cmds, char **envp)
         if (curr->next)
         {
             if (pipe(pipefd) < 0)
+            {
                 ft_exit("pipe");
+            }
         }
         else
+        {
             pipefd[0] = pipefd[1] = -1;
-        ft_pipe_exec(curr->content, pipefd, envp);
+        }
+
+        ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
 
         if (prev_pipe_out >= 0)
+        {
             close(prev_pipe_out);
+        }
 
         if (curr->next)
-            prev_pipe_out = pipefd[1];
+        {
+            prev_pipe_out = pipefd[0];
+            close(pipefd[1]);
+        }
 
-        close(pipefd[0]);
-        close(pipefd[1]);
         curr = curr->next;
     }
 

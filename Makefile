@@ -1,4 +1,4 @@
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
 LIBFT = libft/libft.a
@@ -6,6 +6,8 @@ LIBFT = libft/libft.a
 SRC_FILES = main.c \
 			parsing/handle_specials/ft_handle_env_variables.c \
 			execution/execute.c \
+			execution/builtin.c \
+			execution/redirections.c \
 			parsing/handle_specials/ft_handle_herdoc.c \
 			parsing/handle_specials/ft_handle_quotes.c \
 			parsing/handle_specials/handle_syntax_errors.c \
@@ -23,7 +25,7 @@ EXECUTABLE = minishell
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJ_FILES) $(LIBFT)
-	$(CC) $(CFLAGS) -o $@ $^ -lreadline -fsanitize=address
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

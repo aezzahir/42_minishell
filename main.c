@@ -1,29 +1,50 @@
 #include "minishell.h"
-int	g_status;
+#include <signal.h>
+
+int g_status;
+
 void ft_print_nodes(void *content)
 {
-    printf("%s _ ", (char *)content);
+    (void)((char *)content);
+    // printf("%s _ ", (char *)content);
 }
 
 void ft_print_prompt(void *content)
 {
-   int i;
-   t_cmd *cmd;
-  
+    int i;
+    t_cmd *cmd;
+
     i = 0;
     cmd = (t_cmd *)content;
     while (cmd->cmd_args[i])
     {
-        printf("%s - ",cmd->cmd_args[i]);
+        // printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
-    printf("\ninfile = %s   out_file = %s \n cmd_path = %s\n", cmd->in_file, cmd->out_file, cmd->cmd_path);
+    // printf("\ninfile = %s   out_file = %s \n cmd_path = %s\n", cmd->in_file, cmd->out_file, cmd->cmd_path);
+}
+
+void handle_sigint(int sig)
+{
+    (void)sig;
+    write(STDOUT_FILENO, "\nmini ~$ ", 9);
+}
+
+void handle_sigquit(int sig)
+{
+    (void)sig;
+    write(STDOUT_FILENO, "\nQuit: 3\n", 9);
+}
+
+void setup_signal_handlers(void)
+{
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, handle_sigquit);
 }
 
 int main(int argc, char **argv, char *envp[])
 {
     t_list *tokens_list;
-    //t_prompt prompt;
     t_list *cmds;
     char *cmd_line;
     char *prompt_str = "mini ~$ ";
@@ -33,20 +54,28 @@ int main(int argc, char **argv, char *envp[])
     (void)envp;
     tokens_list = NULL;
     g_status = 0;
+
+    setup_signal_handlers();
+
     while (TRUE)
     {
         cmd_line = readline(prompt_str);
-        if (ft_strlen (cmd_line))
+        if (!cmd_line)
+        {
+            break; // Exit loop on EOF (Ctrl+D)
+        }
+        if (ft_strlen(cmd_line))
         {
             add_history(cmd_line);
             ft_split_tokens(&tokens_list, cmd_line, envp);
             ft_lstiter(tokens_list, ft_print_nodes);
-            printf("\n");
+            // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
-            // ft_exec(cmds, envp);
+            ft_exec(cmds, envp);
             ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
+        free(cmd_line);
     }
     return (0);
 }

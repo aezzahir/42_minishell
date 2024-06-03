@@ -12,6 +12,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+#include <stdbool.h>
+
+
 //
 #define TRUE 1
 #define FALSE 0
@@ -66,11 +69,13 @@ char	*find_path(char **arge);
 
 /// Excution part :-)
 
-
 int ft_exec(t_list *cmds, char **envp);
+void execute_builtin(char *args[]);
 
-
-
+// redirections
+void handle_input_redirection(char *input_file);
+void handle_output_redirection(char *output_file);
+void handle_append_redirection(char *output_file);
 
 
 // utility functions 
