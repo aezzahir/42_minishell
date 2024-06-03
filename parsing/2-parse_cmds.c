@@ -11,7 +11,7 @@ void ft_add_args_to_cmd(t_cmd *cmd, t_list *token, int args_num)
     if (!cmd->cmd_args)
         return;
     i = 0;
-    while ((ft_is_special_token(token) == NORMAL || ft_is_special_token(token) == HERDOC) && i < args_num)
+    while ((ft_is_special_token(token) == NORMAL && i < args_num))
     {
         cmd->cmd_args[i] = (char *)(token->content);
         i++;
@@ -37,6 +37,16 @@ void ft_parse_files(t_cmd *cmd, t_list *token)
         token = token->next;
         ft_add_token(&cmd->out_files_app, token->content);
     }
+    else if (token && ft_is_special_token(token) == HERDOC)
+    {
+        token = token->next;
+        ft_add_token(&cmd->her_docs, token->content);
+    }
+    else if (token && ft_is_special_token(token) == IGNORE)
+    {
+        token = token->next;
+        ft_add_token(&cmd->ignored_files, token->content);
+    }
 	else
 		printf("ERROR PARSING FILES\n");
 }
@@ -50,6 +60,8 @@ void ft_initialize(t_cmd *cmd)
     cmd->in_files = NULL;
     cmd->out_files = NULL;
     cmd->out_files_app = NULL;
+    cmd->ignored_files = NULL;
+    cmd->her_docs = NULL;
 }
 
 t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
@@ -68,7 +80,7 @@ t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
 	token = first_token;
     while (token && ft_is_special_token(token) != PIPE)
     {
-        if (ft_is_special_token(token) == NORMAL || ft_is_special_token(token) == HERDOC)
+        if (ft_is_special_token(token) == NORMAL)
             args_num++;
         else if (ft_special_token_is_a_file(token))
         {

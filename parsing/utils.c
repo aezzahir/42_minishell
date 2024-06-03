@@ -22,14 +22,16 @@ int ft_is_special_token(t_list *token)
         return (EMPTY);
     else if (ft_strncmp(token_content, "|", 2) == 0)
         return (PIPE);
-    else if (ft_strncmp(token_content, "<", 2) == 0)
-        return (INFILE);
-    else if (ft_strncmp(token_content, ">", 2) == 0)
-        return (TRUNC);
+    else if (ft_strncmp(token_content, "<>", 3) == 0)
+        return (IGNORE);
     else if (ft_strncmp(token_content, ">>", 3) == 0)
         return (APPEND);
     else if (ft_strncmp(token_content, "<<", 3) == 0)
         return (HERDOC);
+    else if (ft_strncmp(token_content, "<", 2) == 0)
+        return (INFILE);
+    else if (ft_strncmp(token_content, ">", 2) == 0)
+        return (TRUNC);
     else
         return (NORMAL);
 }
@@ -39,5 +41,7 @@ int ft_special_token_is_a_file(t_list *token)
 {
     return (ft_is_special_token(token) == INFILE
     || ft_is_special_token(token) == TRUNC
+    || ft_is_special_token(token) == IGNORE
+    || ft_is_special_token(token) == HERDOC
     || ft_is_special_token(token) == APPEND);
 }
