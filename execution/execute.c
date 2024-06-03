@@ -22,17 +22,17 @@ bool is_builtin(char *cmd)
 
 static void handle_redirections(t_cmd *cmd)
 {
-    if (cmd->in_file)
+    if (cmd->in_files)
     {
-        handle_input_redirection(cmd->in_file);
+        handle_input_redirection((char *)cmd->in_files->content);
     }
-    if (cmd->out_file)
+    if (cmd->out_files)
     {
-        handle_output_redirection(cmd->out_file);
+        handle_output_redirection((char *)cmd->out_files->content);
     }
-    if (cmd->out_file_app)
+    if (cmd->out_files_app)
     {
-        handle_append_redirection(cmd->out_file_app);
+        handle_append_redirection((char *)cmd->out_files_app->content);
     }
 }
 
@@ -64,7 +64,7 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp
         }
 
         // Handle redirections if any
-        if (cmd->in_file || cmd->out_file || cmd->out_file_app)
+        if (cmd->in_files || cmd->out_files || cmd->out_files_app)
         {
             handle_redirections(cmd);
         }

@@ -78,7 +78,7 @@ int main(int argc, char **argv, char *envp[])
             ft_lstiter(tokens_list, ft_print_nodes);
             // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
-            //ft_exec(cmds, envp);
+            ft_exec(cmds, envp);
             ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
