@@ -31,9 +31,9 @@ typedef struct s_cmd
 {
 	char			**cmd_args;
 	char			*cmd_path;
-	char	    	*in_file;
-	char	    	*out_file;
-	char	    	*out_file_app;
+	t_list	    	*in_files;
+	t_list	    	*out_files;
+	t_list	    	*out_files_app;
 }		t_cmd;
 
 
@@ -45,10 +45,10 @@ void 		ft_add_token(t_list **tokens_list, char *token);
 // 1.1 - handles herdoc quotes and enviremental variables
 char		*ft_handle_envar(char *token, char **envp);
 char 		*ft_handle_heredoc(char *input, int *end);
-char		*ft_handle_quote(char *input, int *start, int *end, char quote);
+int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote);
 char 		*ft_exit_status(char *token);
 int 		ft_handle_syntax_errors(t_list **tokens_list);
-void		unclosed_qoutes(t_list **tokens_list);
+int		unclosed_qoutes(char *input);
 
 char		*ft_substrdup(const char *str, int *start, int *end);
 
