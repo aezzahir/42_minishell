@@ -14,6 +14,7 @@ char *ft_handle_envar(char *token, char **envp)
     int start = 0;
     int end = 0;
     char *var_name;
+    char *var_value;
     char *left;
     char *right;
     char *new_token = NULL;
@@ -36,19 +37,18 @@ char *ft_handle_envar(char *token, char **envp)
             i = end - 1;
 
             var_name = ft_substr(token, start, end - start);
-            char *var_value = getenv(var_name);
+            var_value = getenv(var_name);
             free(var_name);
 
-            if (var_value) {
-                left = ft_substr(token, 0, start - 1);
-                right = ft_substr(token, end, ft_strlen(token) - end);
-                new_token = ft_strjoin(left, var_value);
-                new_token = ft_strjoin(new_token, right);
-                free(left);
-                free(right);
-                free(token);
-                token = new_token;
-            }
+            
+            left = ft_substr(token, 0, start - 1);
+            right = ft_substr(token, end, ft_strlen(token) - end);
+            new_token = ft_strjoin(left, var_value);
+            new_token = ft_strjoin(new_token, right);
+            free(left);
+            free(right);
+            free(token);
+            token = new_token;
         } 
         i++;
     }

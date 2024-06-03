@@ -9,27 +9,37 @@ extern int	g_status;
  * @return: Dynamically allocated quoted substring (NULL if error occurred)
  */
 
-char *ft_handle_quote(char *input, int *start, int *end, char quote)
+int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote)
 {
     char *token;
-
+    char    *left;
+    char    *right;
     
-    *start = *start + 1;
-    *end = *start;
+    printf("in handle quotes %d\n", *start);
     token = NULL;
+    left = NULL;
+
+    if (!(*end > 1 && ft_iswhitespace(input[*end - 1])))
+        left = ft_substrdup(input, start, end);
+    *start = *end + 1;
     while (input && input[*end])
     {
+        *end =*end + 1;
         if (input[*end] == quote)
         {
-            token = ft_substrdup(input, start, end);
+            right = ft_substrdup(input, start, end);
+            token = ft_strjoin(left, right);
+            free(left);
+            free(right);
+            token = ft_handle_envar(token, envp);
+            token = ft_exit_status(token);
+            ft_add_token(tokens_list, token);
             *end =*end + 1;
             *start = *end;
-            return (token);
-        }
-        else
-           *end =*end + 1;
+            return (TRUE);
+        }   
     }
-    *end =*end + 1;
-    *start = *end;
-    return (NULL);
+    if (left)
+        free(left);
+    return (FALSE);
 }

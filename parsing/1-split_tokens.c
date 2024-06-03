@@ -24,8 +24,8 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
     int start = 0;
     int end = 0;
 
-    // if (ft_handle_parse_errors(input))
-    //     return;
+    if (!unclosed_qoutes(input))
+        return;
     while (input && input[end])
     {
         if (ft_iswhitespace(input[end]))
@@ -39,27 +39,16 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
             }
             start = ++end;
         }
-        else if (input[end] == '"' || input[end] == '\'')
+        else if ((input[end] == '"' || input[end] == '\''))
         {
-            token = ft_handle_quote(input, &start, &end, input[end]);
-            token = ft_handle_envar(token, envp);
-            token = ft_exit_status(token);
-            if (!token)
-                return unclosed_qoutes(tokens_list);
-            ft_add_token(tokens_list, token);
+            if (!ft_handle_quote(tokens_list,  envp, input, &start, &end, input[end]))
+                break;
         }
-        else if (input[end] == '>' && input[end + 1] == '>')
+        else if (input[end] == '<' && input[end + 1] == '<')
         {
-            if (end > start)
-            {
-                token = ft_substrdup(input, &start, &end);
-                token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token);
-                ft_add_token(tokens_list, token);
-            }
-            start = end;
+            ft_add_token(tokens_list, ft_strdup("<<"));
             end += 2;
-            token = ft_substrdup(input, &start, &end);
+            token = ft_handle_heredoc(input, &end);
             ft_add_token(tokens_list, token);
         }
         else if (input[end] == '<' && input[end + 1] == '<')

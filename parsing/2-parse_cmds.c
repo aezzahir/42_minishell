@@ -25,17 +25,17 @@ void ft_parse_files(t_cmd *cmd, t_list *token)
     if (token && ft_is_special_token(token) == INFILE)
     {
         token = token->next;
-        cmd->in_file = ft_strdup((char *)(token->content));
+        ft_add_token(&cmd->in_files, token->content);
     }
     else if (token && ft_is_special_token(token) == TRUNC)
     {
         token = token->next;
-        cmd->out_file = ft_strdup((char *)(token->content));
+        ft_add_token(&cmd->out_files, token->content);
     }
     else if (token && ft_is_special_token(token) == APPEND)
     {
         token = token->next;
-        cmd->out_file_app = ft_strdup((char *)(token->content));
+        ft_add_token(&cmd->out_files_app, token->content);
     }
 	else
 		printf("ERROR PARSING FILES\n");
@@ -47,9 +47,9 @@ void ft_initialize(t_cmd *cmd)
 {
     cmd->cmd_args = NULL;
     cmd->cmd_path = NULL;
-    cmd->in_file = NULL;
-    cmd->out_file = NULL;
-    cmd->out_file_app = NULL;
+    cmd->in_files = NULL;
+    cmd->out_files = NULL;
+    cmd->out_files_app = NULL;
 }
 
 t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
