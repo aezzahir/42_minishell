@@ -15,7 +15,7 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
     char    *left;
     char    *right;
     
-    printf("in handle quotes %d\n", *start);
+    // printf("in handle quotes %d\n", *start);
     token = NULL;
     left = NULL;
 
