@@ -16,9 +16,10 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
+    printf("\n");
     while (cmd->cmd_args[i])
     {
-        // printf("%s - ",cmd->cmd_args[i]);
+        printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
     printf("\n cmd_path = %s\n", cmd->cmd_path);
@@ -28,6 +29,8 @@ void ft_print_prompt(void *content)
     ft_lstiter(cmd->out_files, ft_print_nodes);
     printf("\n out_files_app : ");
     ft_lstiter(cmd->out_files_app, ft_print_nodes);
+    printf("\n herdoc_files : ");
+    ft_lstiter(cmd->her_docs, ft_print_nodes);
     printf("\n");
 }
 
@@ -78,7 +81,7 @@ int main(int argc, char **argv, char *envp[])
             ft_lstiter(tokens_list, ft_print_nodes);
             // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
-            ft_exec(cmds, envp);
+            //ft_exec(cmds, envp);
             ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }

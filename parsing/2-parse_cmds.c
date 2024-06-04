@@ -11,10 +11,15 @@ void ft_add_args_to_cmd(t_cmd *cmd, t_list *token, int args_num)
     if (!cmd->cmd_args)
         return;
     i = 0;
-    while ((ft_is_special_token(token) == NORMAL && i < args_num))
+    while (token && i < args_num)
     {
-        cmd->cmd_args[i] = (char *)(token->content);
-        i++;
+        if (ft_special_token_is_a_file(token))
+			token = token->next->next;
+        if (ft_is_special_token(token) == NORMAL)
+        {
+           cmd->cmd_args[i] = (char *)(token->content);
+            i++; 
+        }
         token = token->next;
     }
     cmd->cmd_args[i] = NULL;
@@ -80,13 +85,14 @@ t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
 	token = first_token;
     while (token && ft_is_special_token(token) != PIPE)
     {
-        if (ft_is_special_token(token) == NORMAL)
-            args_num++;
-        else if (ft_special_token_is_a_file(token))
+        
+        if (ft_special_token_is_a_file(token))
         {
 			ft_parse_files(cmd, token);
 			token = token->next;
 		}
+        else if (ft_is_special_token(token) == NORMAL)
+            args_num++;
         token = token->next;
     }
     ft_add_args_to_cmd(cmd, first_token, args_num);
@@ -103,7 +109,7 @@ t_list *get_cmds_list(t_list *token, char **envp)
     cmds = NULL;
     while (token)
     {
-        if (ft_is_special_token(token) == NORMAL)
+        if (ft_is_special_token(token) != PIPE)
         {
             ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
             while (token && ft_is_special_token(token) != PIPE)
