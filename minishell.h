@@ -85,7 +85,7 @@ void handle_append_redirection(char *output_file);
 int ft_iswhitespace(char c);
 int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 int ft_special_token_is_a_file(t_list *token);
-
+char *remove_quotes(char *delim);
 
 
 #define EMPTY 0

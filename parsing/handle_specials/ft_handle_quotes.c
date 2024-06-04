@@ -38,8 +38,11 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
             token = ft_strjoin(left, right);
             free(left);
             free(right);
-            token = ft_handle_envar(token, envp);
-            token = ft_exit_status(token);  
+            if (quote == '"')
+            {
+                token = ft_handle_envar(token, envp);
+                token = ft_exit_status(token);  
+            }
             ft_add_token(tokens_list, token);
             *end =*end + 1;
             *start = *end;

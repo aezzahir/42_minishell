@@ -19,17 +19,22 @@ bool is_builtin(char *cmd)
 void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **envp)
 {
     char *line;
+    int quoted_delim;
     int fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd < 0)
     {
         perror("open temp file");
         exit(EXIT_FAILURE);
     }
-
+    quoted_delim = FALSE;
+    if (!(ft_strchr(delimiter, '"') || ft_strchr(delimiter, '\'')))
+        quoted_delim = TRUE;
+    delimiter = remove_quotes(delimiter); 
+    printf("delimiter == %s\n", delimiter);
     while (1)
     {
         line = readline("heroc> ");
-        if (!(ft_strchr(delimiter, '"') || ft_strchr(delimiter, '\'')))
+        if (quoted_delim)
         {
             line = ft_handle_envar(line, envp);
             line = ft_exit_status(line);
@@ -54,7 +59,7 @@ void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **env
         write(fd, "\n", 1);
         free(line);
     }
-
+    free(delimiter);
     close(fd);
 }
 

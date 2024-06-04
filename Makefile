@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
-
+ 
 LIBFT = libft/libft.a
 
 SRC_FILES = main.c \

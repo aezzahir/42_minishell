@@ -45,3 +45,21 @@ int ft_special_token_is_a_file(t_list *token)
     || ft_is_special_token(token) == HERDOC
     || ft_is_special_token(token) == APPEND);
 }
+
+
+char *remove_quotes(char *delim)
+{
+    int i;
+    int f;
+
+    i = 0;
+    f = 0;
+    if (!delim)
+        return (NULL);
+    while (delim[i] && (delim[i] == '"' || delim[i] == '\''))
+        i++;
+    f = i;
+    while (delim[f] && delim[f] && !(delim[f] == '"' || delim[f] == '\''))
+        f++;
+    return (ft_substrdup(delim, &i, &f));
+}
