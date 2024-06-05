@@ -9,40 +9,20 @@ extern int	g_status;
 
 
 
-char *ft_handle_heredoc(char *input, int *end)
+void ft_handle_heredoc(t_list **tokens_list, char *input, int *end)
 {
     char *delimiter = NULL;
-    char *content = NULL;
-    char *line = NULL;
     int start = *end;
 
     while (ft_iswhitespace(input[*end]))
         (*end)++;
+
     start = *end;
     while (input[*end] && !ft_iswhitespace(input[*end]))
         (*end)++;
 
     delimiter = ft_substrdup(input, &start, end);
-    if(!(*delimiter))
-    {
-        free(delimiter);
-        return (NULL);
-    }
-    content = ft_strdup("");
-    while (1)
-    {
-        line = readline("heredoc> ");
-        if (!line)
-            break;
-        if (!ft_strncmp(line, delimiter, ft_strlen(delimiter)))
-        {
-            free(line);
-            break;
-        }
-        content = ft_strjoin(content, line);
-        content = ft_strjoin(content, "\n");
-        free(line);
-    }
-    free(delimiter);
-    return content;
+    ft_add_token(tokens_list, ft_strdup("<<"));
+    ft_add_token(tokens_list, delimiter);
+    start = *end;
 }

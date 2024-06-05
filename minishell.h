@@ -32,8 +32,11 @@ typedef struct s_cmd
 	char			**cmd_args;
 	char			*cmd_path;
 	t_list	    	*in_files;
+	t_list	    	*her_docs;
 	t_list	    	*out_files;
 	t_list	    	*out_files_app;
+	t_list	    	*ignored_files;
+
 }		t_cmd;
 
 
@@ -44,7 +47,7 @@ void 		ft_add_token(t_list **tokens_list, char *token);
 
 // 1.1 - handles herdoc quotes and enviremental variables
 char		*ft_handle_envar(char *token, char **envp);
-char 		*ft_handle_heredoc(char *input, int *end);
+void ft_handle_heredoc(t_list **tokens_list, char *input, int *end);
 int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote);
 char 		*ft_exit_status(char *token);
 int 		ft_handle_syntax_errors(t_list **tokens_list);
@@ -90,7 +93,7 @@ void unset_env(char *var);
 int ft_iswhitespace(char c);
 int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 int ft_special_token_is_a_file(t_list *token);
-
+char *remove_quotes(char *delim);
 
 
 #define EMPTY 0
@@ -99,6 +102,7 @@ int ft_special_token_is_a_file(t_list *token);
 #define TRUNC 3
 #define APPEND 4
 #define HERDOC 5
+#define IGNORE 7
 #define NORMAL 6
 
 #endif

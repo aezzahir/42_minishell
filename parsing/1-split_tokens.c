@@ -46,25 +46,15 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
         }
         else if (input[end] == '<' && input[end + 1] == '<')
         {
-            ft_add_token(tokens_list, ft_strdup("<<"));
             end += 2;
-            token = ft_handle_heredoc(input, &end);
-            ft_add_token(tokens_list, token);
-        }
-        else if (input[end] == '<' && input[end + 1] == '<')
-        {  
+            ft_handle_heredoc(tokens_list, input, &end);
             start = end;
+        }
+        else if ((input[end] == '<' ||  input[end] == '>') && input[end + 1] == '>')
+        {
             end += 2;
             token = ft_substrdup(input, &start, &end);
-            start = end;
             ft_add_token(tokens_list, token);
-            token = ft_handle_heredoc(input, &end);
-            start = end;
-            token = ft_exit_status(token);
-            token = ft_handle_envar(token, envp);
-            ft_add_token(tokens_list, token);
-            if (!token)
-                break;
         }
         else if (input[end] == '<' || input[end] == '>' || input[end] == '|')
         {
