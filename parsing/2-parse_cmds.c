@@ -108,7 +108,6 @@ t_list *get_cmds_list(t_list *token, char **envp)
     cmds = NULL;
     while (token)
     {
-        printf("- %s \n", (char *)token->content);
         if (ft_is_special_token(token) != PIPE)
         {
             ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
