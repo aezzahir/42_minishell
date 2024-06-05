@@ -18,12 +18,49 @@ bool is_builtin(char *cmd)
 
 void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **envp)
 {
-    if (cmd->in_files)
-        handle_input_redirection((char *)cmd->in_files->content);
-    if (cmd->out_files)
-        handle_output_redirection((char *)cmd->out_files->content);
-    if (cmd->out_files_app)
-        handle_append_redirection((char *)cmd->out_files_app->content);
+    char *line;
+    int quoted_delim;
+    int fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0)
+    {
+        perror("open temp file");
+        exit(EXIT_FAILURE);
+    }
+    quoted_delim = FALSE;
+    if (!(ft_strchr(delimiter, '"') || ft_strchr(delimiter, '\'')))
+        quoted_delim = TRUE;
+    delimiter = remove_quotes(delimiter); 
+    printf("delimiter == %s\n", delimiter);
+    while (1)
+    {
+        line = readline("heroc> ");
+        if (quoted_delim)
+        {
+            line = ft_handle_envar(line, envp);
+            line = ft_exit_status(line);
+        }
+        printf("tmp = %s\n", line); 
+        if (line == NULL || ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+        if (remove_tabs)
+        {
+            char *tmp = line;
+            while (*tmp == '\t')
+                tmp++;   
+            write(fd, tmp, ft_strlen(tmp));
+        }
+        else
+        {
+            write(fd, line, ft_strlen(line));
+        }
+        write(fd, "\n", 1);
+        free(line);
+    }
+    free(delimiter);
+    close(fd);
 }
 
 void concatenate_files(char *final_file, t_list *her_docs, char **envp)
@@ -112,8 +149,6 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         close(fd);
         unlink(final_file); // Remove the final temporary file after use
     }
-
-    // Handle output redirections
     current = cmd->out_files;
     if (current)
     {
@@ -124,7 +159,6 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         }
         handle_output_redirection((char *)current->content);
     }
-
     current = cmd->out_files_app;
     if (current)
     {
@@ -153,6 +187,7 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp
     pid = fork();
     if (pid == 0)
     {
+        signal(SIGINT, SIG_DFL);
         if (prev_pipe_out != -1)
         {
             dup2(prev_pipe_out, STDIN_FILENO);
@@ -163,13 +198,16 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp
             dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[1]);
         }
-        if (cmd->in_files || cmd->out_files || cmd->out_files_app)
-            handle_redirections(cmd);
+        handle_redirections(cmd, envp);
         execve(cmd->cmd_path, cmd->cmd_args, envp);
         ft_exit("execve");
     }
     else if (pid < 0)
+    {
+        signal(SIGINT, ignore);
         ft_exit("fork");
+    }
+
     waitpid(pid, NULL, 0);
 }
 
@@ -196,8 +234,6 @@ int ft_exec(t_list *cmds, char **envp)
             close(final_fd);
 
             concatenate_files(final_file, cmd->her_docs, envp);
-
-            // Replace her_docs with the final_file path for input redirection
             t_list *new_in_file = malloc(sizeof(t_list));
             if (!new_in_file)
             {
@@ -212,8 +248,6 @@ int ft_exec(t_list *cmds, char **envp)
             }
             new_in_file->next = cmd->in_files;
             cmd->in_files = new_in_file;
-
-            // Clear the her_docs list as it has been processed
             t_list *tmp;
             while (cmd->her_docs)
             {
@@ -225,7 +259,6 @@ int ft_exec(t_list *cmds, char **envp)
         }
         curr = curr->next;
     }
-
     curr = cmds;
     while (curr)
     {
@@ -237,6 +270,7 @@ int ft_exec(t_list *cmds, char **envp)
         else
             pipefd[0] = pipefd[1] = -1;
         ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
+
         if (prev_pipe_out >= 0)
             close(prev_pipe_out);
         if (curr->next)
