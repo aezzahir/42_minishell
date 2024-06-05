@@ -77,6 +77,14 @@ void handle_input_redirection(char *input_file);
 void handle_output_redirection(char *output_file);
 void handle_append_redirection(char *output_file);
 
+// builtins
+void cd(char *path);
+void echo(char *args[]);
+void env();
+void exit_shell(int status);
+void export_env(char *var);
+void pwd();
+void unset_env(char *var);
 
 // utility functions 
 int ft_iswhitespace(char c);

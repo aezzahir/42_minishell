@@ -23,17 +23,11 @@ bool is_builtin(char *cmd)
 static void handle_redirections(t_cmd *cmd)
 {
     if (cmd->in_files)
-    {
         handle_input_redirection((char *)cmd->in_files->content);
-    }
     if (cmd->out_files)
-    {
         handle_output_redirection((char *)cmd->out_files->content);
-    }
     if (cmd->out_files_app)
-    {
         handle_append_redirection((char *)cmd->out_files_app->content);
-    }
 }
 
 static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
@@ -49,34 +43,23 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp
     pid = fork();
     if (pid == 0)
     {
-        // Handle input from the previous pipe
         if (prev_pipe_out != -1)
         {
             dup2(prev_pipe_out, STDIN_FILENO);
             close(prev_pipe_out);
         }
-
-        // Handle output to the next pipe
         if (pipefd[1] != -1)
         {
             dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[1]);
         }
-
-        // Handle redirections if any
         if (cmd->in_files || cmd->out_files || cmd->out_files_app)
-        {
             handle_redirections(cmd);
-        }
-
         execve(cmd->cmd_path, cmd->cmd_args, envp);
         ft_exit("execve");
     }
     else if (pid < 0)
-    {
         ft_exit("fork");
-    }
-
     waitpid(pid, NULL, 0);
 }
 
@@ -92,28 +75,18 @@ int ft_exec(t_list *cmds, char **envp)
         if (curr->next)
         {
             if (pipe(pipefd) < 0)
-            {
                 ft_exit("pipe");
-            }
         }
         else
-        {
             pipefd[0] = pipefd[1] = -1;
-        }
-
         ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
-
         if (prev_pipe_out >= 0)
-        {
             close(prev_pipe_out);
-        }
-
         if (curr->next)
         {
             prev_pipe_out = pipefd[0];
             close(pipefd[1]);
         }
-
         curr = curr->next;
     }
 
