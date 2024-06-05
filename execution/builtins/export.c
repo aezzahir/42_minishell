@@ -1,5 +1,6 @@
 #include "../../minishell.h"
 
+
 int check_name(const char *name)
 {
     int j = 0;
@@ -14,26 +15,45 @@ int check_name(const char *name)
     }
     return 0;
 }
-
+void print_error(const char *msg, const char *arg)
+{
+    ft_putstr_fd("export: ", STDERR_FILENO);
+    ft_putstr_fd((char *)msg, STDERR_FILENO);
+    if (arg)
+    {
+        ft_putstr_fd(": ", STDERR_FILENO);
+        ft_putendl_fd((char *)arg, STDERR_FILENO);
+    }
+}
 
 void export_env(char *var)
 {
-    if (var == NULL || strchr(var, '=') == NULL)
+    if (var == NULL || ft_strchr(var, '=') == NULL)
     {
-        fprintf(stderr, "export: invalid format\n");
+        print_error("invalid format", var);
         return;
     }
 
     int i = 0;
-    while (var[i] && var[i] != '=')
+    int append = 0;
+    while (var[i] && var[i] != '=' && var[i] != '+')
         i++;
 
-    char *name = strndup(var, i);
+    if (var[i] == '+' && var[i + 1] == '=')
+    {
+        append = 1;
+        var[i] = '\0';
+        i++;
+    }
+
+    char *name = malloc(i + 1);
     if (name == NULL)
     {
         perror("export");
         return;
     }
+    strncpy(name, var, i);
+    name[i] = '\0'; // Null-terminate the substring
 
     if (check_name(name))
     {
@@ -41,7 +61,7 @@ void export_env(char *var)
         return;
     }
 
-    char *value = strdup(var + i + 1);
+    char *value = ft_strdup(var + i + 1);
     if (value == NULL)
     {
         perror("export");
@@ -49,7 +69,26 @@ void export_env(char *var)
         return;
     }
 
-    char *var_copy = malloc(strlen(name) + strlen(value) + 2);
+    if (append)
+    {
+        char *old_value = getenv(name);
+        if (old_value)
+        {
+            char *new_value = malloc(ft_strlen(old_value) + ft_strlen(value) + 1);
+            if (new_value == NULL)
+            {
+                perror("export");
+                free(name);
+                free(value);
+                return;
+            }
+            sprintf(new_value, "%s%s", old_value, value);
+            free(value);
+            value = new_value;
+        }
+    }
+
+    char *var_copy = malloc(ft_strlen(name) + ft_strlen(value) + 2);
     if (var_copy == NULL)
     {
         perror("export");

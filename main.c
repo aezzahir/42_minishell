@@ -16,10 +16,10 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
-    printf("\n");
+    // printf("\n");
     while (cmd->cmd_args[i])
     {
-        printf("%s - ",cmd->cmd_args[i]);
+        // printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
     // printf("\n cmd_path = %s\n", cmd->cmd_path);

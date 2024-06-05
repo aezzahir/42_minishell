@@ -1,36 +1,34 @@
 #include "../../minishell.h"
 
 
-void echo(char *args[]) {
+void echo(char *args[])
+{
     bool newline = true;
     int i = 1;
-    int j = 1;
-    if (args[1] && args[1][0] == '-') {
-        bool all_n = true;
-  
-    while (args[1][j] != '\0') {
-        if (args[1][j] != 'n') {
-            all_n = false;
-            break;
-        }
-        j++;
-    }
 
-        if (all_n) {
+    if (args[i] && args[i][0] == '-')
+    {
+        int j;
+        while (args[i] && args[i][0] == '-')
+        {
+            j = 1;
+            while (args[i][j] == 'n')
+                j++;
+            if (args[i][j] != '\0')
+                break;
             newline = false;
             i++;
         }
     }
 
-  while (args[i] != NULL) {
-    if (i > 1) {
-        printf(" ");
+    while (args[i] != NULL)
+    {
+        if (i > 1)
+            ft_putstr_fd(" ", 1);
+        ft_putstr_fd(args[i], 1);
+        i++;
     }
-    printf("%s", args[i]);
-    i++;
-}
 
-    if (newline) {
-        printf("\n");
-    }
+    if (newline)
+        write(1, "\n", 1);
 }
