@@ -23,7 +23,6 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
     char *token;
     int start = 0;
     int end = 0;
-
     if (!unclosed_qoutes(input))
         return;
     while (input && input[end])

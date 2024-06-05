@@ -87,6 +87,8 @@ int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 int ft_special_token_is_a_file(t_list *token);
 char *remove_quotes(char *delim);
 
+void ft_print_nodes(void *content);
+void ft_print_prompt(void *content);
 
 #define EMPTY 0
 #define	PIPE  1

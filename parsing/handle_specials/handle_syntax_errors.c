@@ -1,6 +1,17 @@
 #include "../../minishell.h"
 extern int	g_status;
 
+int parsing_error(t_list **tokens_list, t_list *token)
+{
+    ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+    if(token->next)
+        ft_putstr_fd((char *)token->next->content, 2);
+    else
+        ft_putstr_fd("`newline'", 2);
+    ft_putstr_fd("\n", 2);
+    ft_lstclear(tokens_list, free);
+    return FALSE;
+}
 
 int ft_handle_syntax_errors(t_list **tokens_list)
 {
@@ -10,19 +21,14 @@ int ft_handle_syntax_errors(t_list **tokens_list)
     if(!tokens_list)
         return(FALSE);
     token = *tokens_list;
+    if (ft_is_special_token(token) == PIPE)
+        return parsing_error(tokens_list, token);
     while (token)
     {
-        if(ft_is_special_token(token) != NORMAL && ( !token->next || ft_is_special_token(token->next) != NORMAL))
-        {
-            ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
-            if(token->next)
-                ft_putstr_fd((char *)token->next->content, 2);
-            else
-                ft_putstr_fd("`newline'", 2);
-            ft_putstr_fd("\n", 2);
-            ft_lstclear(tokens_list, free);
-            return (FALSE);
-        }
+        if(ft_special_token_is_a_file(token) && ft_is_special_token(token->next) != NORMAL)
+            return parsing_error(tokens_list, token);
+        else if (ft_is_special_token(token) == PIPE && (!token->next || ft_is_special_token(token->next) == PIPE))
+            return parsing_error(tokens_list, token);
         token = token->next;
     }
     return (TRUE);

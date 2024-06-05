@@ -20,6 +20,8 @@ char *get_path(char *cmd, char **envp)
     char **paths;
     int i;
 
+    if (!cmd)
+        return (NULL);
     if (ft_strchr(cmd, '/') || !find_path(envp) || (cmd && *cmd == '.'))
         return (ft_strdup(cmd));
 

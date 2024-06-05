@@ -16,10 +16,10 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
-    printf("\n");
-    while (cmd->cmd_args[i])
+    printf("\n Cmd ARGS = ");
+    while (cmd->cmd_args && cmd->cmd_args[i])
     {
-        printf("%s - ",cmd->cmd_args[i]);
+        printf("%d -> %s", i, cmd->cmd_args[i]);
         i++;
     }
     printf("\n cmd_path = %s\n", cmd->cmd_path);
@@ -81,7 +81,7 @@ int main(int argc, char **argv, char *envp[])
             ft_lstiter(tokens_list, ft_print_nodes);
             // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
-            ft_exec(cmds, envp);
+            //ft_exec(cmds, envp);
             ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
