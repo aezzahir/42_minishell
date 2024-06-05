@@ -116,7 +116,7 @@ void export_env(char *var)
         return;
     }
 
-    char *value = strdup(var + i + 1);
+    char *value = ft_strdup(var + i + 1);
     if (value == NULL)
     {
         perror("export");

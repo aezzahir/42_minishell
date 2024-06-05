@@ -6,7 +6,7 @@ int g_status;
 void ft_print_nodes(void *content)
 {
     (void)((char *)content);
-    printf("%s, ", (char *)content);
+    // printf("%s, ", (char *)content);
 }
 
 void ft_print_prompt(void *content)
@@ -16,22 +16,20 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
-    printf("\n Cmd ARGS = ");
-    while (cmd->cmd_args && cmd->cmd_args[i])
+    printf("\n");
+    while (cmd->cmd_args[i])
     {
-        printf("%d -> %s", i, cmd->cmd_args[i]);
+        printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
-    printf("\n cmd_path = %s\n", cmd->cmd_path);
-    printf("\n in_files : ");
+    // printf("\n cmd_path = %s\n", cmd->cmd_path);
+    // printf("\n in_files : ");
     ft_lstiter(cmd->in_files, ft_print_nodes);
-    printf("\n out_files : ");
+    // printf("\n out_files : ");
     ft_lstiter(cmd->out_files, ft_print_nodes);
-    printf("\n out_files_app : ");
+    // printf("\n out_files_app : ");
     ft_lstiter(cmd->out_files_app, ft_print_nodes);
-    printf("\n her_docs : ");
-    ft_lstiter(cmd->her_docs, ft_print_nodes);
-    printf("\n");
+    // printf("\n");
 }
 
 void handle_sigint(int sig)

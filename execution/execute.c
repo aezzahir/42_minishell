@@ -149,8 +149,6 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         close(fd);
         unlink(final_file); // Remove the final temporary file after use
     }
-
-    // Handle output redirections
     current = cmd->out_files;
     if (current)
     {
@@ -161,7 +159,6 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         }
         handle_output_redirection((char *)current->content);
     }
-
     current = cmd->out_files_app;
     if (current)
     {
@@ -191,23 +188,17 @@ static void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp
     if (pid == 0)
     {
         signal(SIGINT, SIG_DFL);
-        // Handle input from the previous pipe
         if (prev_pipe_out != -1)
         {
             dup2(prev_pipe_out, STDIN_FILENO);
             close(prev_pipe_out);
         }
-
-        // Handle output to the next pipe
         if (pipefd[1] != -1)
         {
             dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[1]);
         }
-
-        // Handle all types of redirections, including heredoc
         handle_redirections(cmd, envp);
-
         execve(cmd->cmd_path, cmd->cmd_args, envp);
         ft_exit("execve");
     }
@@ -243,8 +234,6 @@ int ft_exec(t_list *cmds, char **envp)
             close(final_fd);
 
             concatenate_files(final_file, cmd->her_docs, envp);
-
-            // Replace her_docs with the final_file path for input redirection
             t_list *new_in_file = malloc(sizeof(t_list));
             if (!new_in_file)
             {
@@ -259,8 +248,6 @@ int ft_exec(t_list *cmds, char **envp)
             }
             new_in_file->next = cmd->in_files;
             cmd->in_files = new_in_file;
-
-            // Clear the her_docs list as it has been processed
             t_list *tmp;
             while (cmd->her_docs)
             {
@@ -272,35 +259,25 @@ int ft_exec(t_list *cmds, char **envp)
         }
         curr = curr->next;
     }
-
     curr = cmds;
     while (curr)
     {
         if (curr->next)
         {
             if (pipe(pipefd) < 0)
-            {
                 ft_exit("pipe");
-            }
         }
         else
-        {
             pipefd[0] = pipefd[1] = -1;
-        }
-
         ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
 
         if (prev_pipe_out >= 0)
-        {
             close(prev_pipe_out);
-        }
-
         if (curr->next)
         {
             prev_pipe_out = pipefd[0];
             close(pipefd[1]);
         }
-
         curr = curr->next;
     }
 

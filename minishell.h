@@ -8,13 +8,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 //
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
 #include <stdbool.h>
 
-
+#include <errno.h>
+#include <string.h> // Include this header for strerror
 //
 #define TRUE 1
 #define FALSE 0
@@ -39,6 +39,14 @@ typedef struct s_cmd
 
 }		t_cmd;
 
+typedef struct s_env {
+    char *value;
+    struct s_env *next;
+} t_env;
+
+typedef struct s_mini {
+    t_env *env;
+} t_mini;
 
 // 1 - tokenazing strings
 void 		ft_split_tokens(t_list **tokens_list, char *input, char **envp);
@@ -80,6 +88,14 @@ void handle_input_redirection(char *input_file);
 void handle_output_redirection(char *output_file);
 void handle_append_redirection(char *output_file);
 
+// builtins
+void cd(char *path);
+void echo(char *args[]);
+void env();
+void exit_shell(int status);
+void export_env(char *var);
+void pwd();
+void unset_env(char *var);
 
 // utility functions 
 int ft_iswhitespace(char c);
