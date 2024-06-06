@@ -6,6 +6,7 @@ LIBFT = libft/libft.a
 SRC_FILES = main.c \
 			parsing/handle_specials/ft_handle_env_variables.c \
 			execution/execute.c \
+			execution/heredoc.c \
 			execution/builtins/builtin.c \
 			execution/builtins/cd.c \
 			execution/builtins/echo.c \

@@ -53,29 +53,6 @@ void pwd()
     }
 }
 
-// void export_env(char *var)
-// {
-//     if (var == NULL || strchr(var, '=') == NULL)
-//     {
-//         fprintf(stderr, "export: invalid format\n");
-//         return;
-//     }
-
-//     char *var_copy = strdup(var);
-//     if (var_copy == NULL)
-//     {
-//         perror("export");
-//         return;
-//     }
-
-//     if (putenv(var_copy) != 0)
-//     {
-//         perror("export");
-//         free(var_copy);
-//     }
-// }
-
-
 int check_name(const char *name)
 {
     int j = 0;
@@ -93,39 +70,38 @@ int check_name(const char *name)
 
 void export_env(char *var)
 {
+    char *value;
+    char *name;
+    char *var_copy;
+    int i;
+
     if (var == NULL || strchr(var, '=') == NULL)
     {
         fprintf(stderr, "export: invalid format\n");
         return;
     }
-
-    int i = 0;
+    i = 0;
     while (var[i] && var[i] != '=')
         i++;
-
-    char *name = strndup(var, i);
+    name = strndup(var, i);
     if (name == NULL)
     {
         perror("export");
         return;
     }
-
     if (check_name(name))
     {
         free(name);
         return;
     }
-
-    char *value = ft_strdup(var + i + 1);
+    value = ft_strdup(var + i + 1);
     if (value == NULL)
     {
         perror("export");
         free(name);
         return;
     }
-
-    // Combine name and value into a single string for putenv
-    char *var_copy = malloc(strlen(name) + strlen(value) + 2);
+    var_copy = malloc(strlen(name) + strlen(value) + 2);
     if (var_copy == NULL)
     {
         perror("export");
@@ -133,17 +109,12 @@ void export_env(char *var)
         free(value);
         return;
     }
-
     sprintf(var_copy, "%s=%s", name, value);
-
     if (putenv(var_copy) != 0)
     {
         perror("export");
         free(var_copy);
     }
-
-    // Free the temporary name and value strings, but not var_copy,
-    // because putenv does not copy the string passed to it.
     free(name);
     free(value);
 }

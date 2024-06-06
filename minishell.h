@@ -56,6 +56,8 @@ void 		ft_add_token(t_list **tokens_list, char *token);
 // 1.1 - handles herdoc quotes and enviremental variables
 char		*ft_handle_envar(char *token, char **envp);
 void ft_handle_heredoc(t_list **tokens_list, char *input, int *end);
+void concatenate_files(char *final_file, t_list *her_docs, char **envp);
+
 int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote);
 char 		*ft_exit_status(char *token);
 int 		ft_handle_syntax_errors(t_list **tokens_list);
