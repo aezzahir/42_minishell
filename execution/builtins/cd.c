@@ -7,7 +7,7 @@ void cd(char *path)
     if (path == NULL || path[0] == '\0')
     {
         fprintf(stderr, "cd: missing operand\n");
-        return;
+        return; 
     }
 
     // Try changing directory

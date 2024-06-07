@@ -35,7 +35,7 @@ void ft_print_prompt(void *content)
 void handle_sigint(int sig)
 {
     (void)sig;
-    write(STDOUT_FILENO, "\nmini ~$ ", 9);
+    write(STDOUT_FILENO, "\nminishell$ ", 9);
 }
 
 void handle_sigquit(int sig)

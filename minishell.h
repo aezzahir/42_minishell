@@ -98,6 +98,19 @@ void exit_shell(int status);
 void export_env(char *var);
 void pwd();
 void unset_env(char *var);
+bool is_builtin(char *cmd);
+
+void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp);
+
+// signals
+typedef struct s_signal_context
+{
+    int pid;
+    int exit_status;
+    int sigint;
+    int sigquit;
+} t_signal_context;
+
 
 // utility functions 
 int ft_iswhitespace(char c);
