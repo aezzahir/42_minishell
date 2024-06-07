@@ -38,6 +38,7 @@ char *ft_handle_envar(char *token, char **envp)
 
             var_name = ft_substr(token, start, end - start);
             var_value = getenv(var_name);
+            var_value = remove_multiple_whitespaces(var_value);
             free(var_name);
 
             
