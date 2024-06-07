@@ -52,6 +52,8 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
         else if (!in_quote && (input[*end] == '"' || input[*end] == '\''))
         {
             right = ft_substrdup(input, start, end);
+            right = ft_handle_envar(right, envp);
+            right = ft_exit_status(right);
             left = ft_strjoin(left, right);
             quote = input[*end];
             in_quote = TRUE;
@@ -61,6 +63,8 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
         {
             *end = *end + 1;
             right = ft_substrdup(input, start, end);
+            right = ft_handle_envar(right, envp);
+            right = ft_exit_status(right);
             left = ft_strjoin(left, right);
             free(right);
             *start = *end;
