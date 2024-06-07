@@ -59,7 +59,7 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
             in_quote = TRUE;
             *start = *end + 1;
         }
-        else if (!input[*end + 1] || (!in_quote && ft_iswhitespace(input[*end + 1])))
+        if (!input[*end + 1] || (!in_quote && ft_iswhitespace(input[*end + 1])))
         {
             *end = *end + 1;
             right = ft_substrdup(input, start, end);
