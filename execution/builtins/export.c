@@ -1,6 +1,5 @@
 #include "../../minishell.h"
 
-
 int check_name(const char *name)
 {
     int j = 0;
@@ -15,20 +14,10 @@ int check_name(const char *name)
     }
     return 0;
 }
-void print_error(const char *msg, const char *arg)
-{
-    ft_putstr_fd("export: ", STDERR_FILENO);
-    ft_putstr_fd((char *)msg, STDERR_FILENO);
-    if (arg)
-    {
-        ft_putstr_fd(": ", STDERR_FILENO);
-        ft_putendl_fd((char *)arg, STDERR_FILENO);
-    }
-}
 
-void export_env(char *var)
+void export_single_var(char *var)
 {
-    if (var == NULL || ft_strchr(var, '=') == NULL)
+    if (ft_strchr(var, '=') == NULL)
     {
         print_error("invalid format", var);
         return;
@@ -38,7 +27,11 @@ void export_env(char *var)
     int append = 0;
     while (var[i] && var[i] != '=' && var[i] != '+')
         i++;
-
+    if (var[i] == '+' && var[i + 1] == '+')
+    {
+        print_error("invalid format", var);
+        return;
+    }
     if (var[i] == '+' && var[i + 1] == '=')
     {
         append = 1;
@@ -55,8 +48,9 @@ void export_env(char *var)
     strncpy(name, var, i);
     name[i] = '\0'; // Null-terminate the substring
 
-    if (check_name(name))
+    if (check_name(name) || is_number(name))
     {
+        print_error("invalid identifier", name);
         free(name);
         return;
     }
@@ -104,6 +98,22 @@ void export_env(char *var)
         perror("export");
         free(var_copy);
     }
-    free(name);
-    free(value);
+    // Do not free name and value here, as var_copy includes them
+}
+
+void export_env(char *vars)
+{
+    if (vars == NULL)
+    {
+        print_env_vars();
+        return;
+    }
+
+    char *token;
+    char *rest = vars;
+
+    while ((token = strtok_r(rest, " ", &rest)))
+    {
+        export_single_var(token);
+    }
 }

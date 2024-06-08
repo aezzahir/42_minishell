@@ -1,32 +1,41 @@
 #include "../minishell.h"
 
+int create_unique_temp_file(char *template, int num)
+{
+    char final_file[256];
+    int fd;
+    sprintf(final_file, "%s%05d", template, num);
+
+    fd = open(final_file, O_CREAT | O_EXCL | O_RDWR, 0600);
+    if (fd == -1 && errno == EEXIST) {
+        return create_unique_temp_file(template, num + 1);
+    }
+
+    if (fd == -1) {
+        perror("open unique final heredoc temp file");
+        exit(EXIT_FAILURE);
+    }
+
+    strcpy(template, final_file);
+    return fd;
+}
+
 static void handle_redirections(t_cmd *cmd, char **envp)
 {
     t_list *current;
-
-    // Handle input redirections
+    char final_file_template[] = "/tmp/minishell_final_heredoc";
     current = cmd->in_files;
-    while (current)
+    while (current && current->content)
     {
         handle_input_redirection((char *)current->content);
         current = current->next;
     }
-
-    // Handle heredocs
     if (cmd->her_docs)
     {
-        char final_file[] = "/tmp/minishell_final_heredocXXXXXX";
-        int final_fd = mkstemp(final_file);
-        if (final_fd == -1)
-        {
-            perror("mkstemp");
-            exit(EXIT_FAILURE);
-        }
+        int final_fd = create_unique_temp_file(final_file_template, 0);
         close(final_fd);
-
-        concatenate_files(final_file, cmd->her_docs, envp);
-
-        int fd = open(final_file, O_RDONLY);
+        concatenate_files(final_file_template, cmd->her_docs, envp);
+        int fd = open(final_file_template, O_RDONLY);
         if (fd < 0)
         {
             perror("open final heredoc temp file");
@@ -38,10 +47,10 @@ static void handle_redirections(t_cmd *cmd, char **envp)
             exit(EXIT_FAILURE);
         }
         close(fd);
-        unlink(final_file);
+        unlink(final_file_template);
     }
     current = cmd->out_files;
-    if (current)
+    if (current && current->content)
     {
         while (current->next)
         {
@@ -51,7 +60,7 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         handle_output_redirection((char *)current->content);
     }
     current = cmd->out_files_app;
-    if (current)
+    if (current && current->content)
     {
         while (current->next)
         {
@@ -73,7 +82,7 @@ void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
     if (is_builtin(cmd->cmd_args[0]))
     {
         execute_builtin(cmd->cmd_args);
-        return;
+        // return;
     }
     signal(SIGINT, SIG_IGN);
     pid = fork();

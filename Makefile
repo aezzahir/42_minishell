@@ -8,6 +8,7 @@ SRC_FILES = main.c \
 			execution/execute.c \
 			execution/heredoc.c \
 			execution/pipes.c \
+			execution/utils.c \
 			execution/builtins/builtin.c \
 			execution/builtins/cd.c \
 			execution/builtins/echo.c \

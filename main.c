@@ -16,10 +16,10 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
-    printf("\n");
+    // printf("\n");
     while (cmd->cmd_args[i])
     {
-        printf("%s - ",cmd->cmd_args[i]);
+        // printf("%s - ",cmd->cmd_args[i]);
         i++;
     }
     // printf("\n cmd_path = %s\n", cmd->cmd_path);
@@ -64,7 +64,7 @@ int main(int argc, char **argv, char *envp[])
     g_status = 0;
 
     setup_signal_handlers();
-
+    setup_default_env();
     while (TRUE)
     {
         cmd_line = readline(prompt_str);

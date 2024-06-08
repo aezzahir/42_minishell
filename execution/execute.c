@@ -69,7 +69,8 @@ int ft_exec(t_list *cmds, char **envp)
         }
         else
             pipefd[0] = pipefd[1] = -1;
-        ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
+        if(curr->content)
+            ft_pipe_exec(curr->content, pipefd, prev_pipe_out, envp);
 
         if (prev_pipe_out >= 0)
             close(prev_pipe_out);

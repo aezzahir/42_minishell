@@ -94,14 +94,20 @@ void handle_append_redirection(char *output_file);
 void cd(char *path);
 void echo(char *args[]);
 void env();
-void exit_shell(int status);
+void exit_shell(char *arg);
 void export_env(char *var);
 void pwd();
-void unset_env(char *var);
+void unset_env(char **vars);
 bool is_builtin(char *cmd);
 
 void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp);
 
+void setup_default_env(void);
+
+
+int is_number(const char *str);
+void print_env_vars(void);
+void print_error(const char *msg, const char *arg);
 // signals
 typedef struct s_signal_context
 {
@@ -117,6 +123,9 @@ int ft_iswhitespace(char c);
 int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 int ft_special_token_is_a_file(t_list *token);
 char *remove_quotes(char *delim);
+
+
+
 
 void ft_print_nodes(void *content);
 void ft_print_prompt(void *content);

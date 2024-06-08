@@ -17,3 +17,16 @@ void env(void)
         env++;
     }
 }
+
+
+void setup_default_env(void)
+{
+    char cwd[1024];
+
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        setenv("PWD", cwd, 1);
+    }
+    setenv("SHLVL", "1", 1);
+setenv("_", "/usr/bin/env", 1);
+}
