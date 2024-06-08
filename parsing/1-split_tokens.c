@@ -33,7 +33,6 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
             {
                 token = ft_substrdup(input, &start, &end);
                 token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token);
                 ft_add_token(tokens_list, token);
             }
             start = ++end;
@@ -71,7 +70,6 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
     {
         token = ft_substrdup(input, &start, &end);
         token = ft_handle_envar(token, envp);
-        token = ft_exit_status(token);
         ft_add_token(tokens_list, token);
     }
     ft_handle_syntax_errors(tokens_list);

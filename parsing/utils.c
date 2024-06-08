@@ -63,3 +63,42 @@ char *remove_quotes(char *delim)
         f++;
     return (ft_substrdup(delim, &i, &f));
 }
+
+char *remove_multiple_whitespaces(char *str)
+{
+    int i;
+    int j;
+    int len;
+    char *result;
+
+    if (str == NULL)
+        return (NULL);
+
+    len = strlen(str);
+    result = (char *)malloc(sizeof(char) * (len + 1));
+    if (result == NULL)
+        return (NULL);
+
+    i = 0;
+    j = 0;
+    while (str[i])
+    {
+        if (!ft_iswhitespace(str[i]))
+        {
+            result[j++] = str[i];
+        }
+        else if (j > 0 && !ft_iswhitespace(result[j - 1]))
+        {
+            result[j++] = ' ';
+        }
+        i++;
+    }
+    result[j] = '\0';
+
+    if (j > 0 && ft_iswhitespace(result[j - 1]))
+    {
+        result[j - 1] = '\0';
+    }
+
+    return (result);
+}

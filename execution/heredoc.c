@@ -21,10 +21,7 @@ void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **env
     {
         line = readline("heredoc> ");
         if (quoted_delim)
-        {
             line = ft_handle_envar(line, envp);
-            line = ft_exit_status(line);
-        }
         if (line == NULL || ft_strcmp(line, delimiter) == 0)
         {
             free(line);

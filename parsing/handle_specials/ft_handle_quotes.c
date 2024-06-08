@@ -9,19 +9,23 @@ extern int	g_status;
  * @return: Dynamically allocated quoted substring (NULL if error occurred)
  */
 
+
+
+
 int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote)
 {
-    char *token;
     char    *left;
     char    *right;
-    
-    // printf("in handle quotes %d\n", *start);
-    token = NULL;
-    left = NULL;
+    int     in_quote;
 
-    if (!(*end > 1 && ft_iswhitespace(input[*end - 1])))
-        left = ft_substrdup(input, start, end);
-    *start = *end + 1;
+    left = NULL;
+    right = NULL;
+    in_quote = TRUE;
+
+    left = ft_substrdup(input, start, end);
+    left = ft_handle_envar(left, envp);
+    *end = *end + 1;
+    *start = *end;
     if (ft_is_special_token(ft_lstlast(*tokens_list)) == HERDOC)
     {
         right = ft_strjoin("'", left);
@@ -29,27 +33,46 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
         left = right;
         right = NULL;
     }
-    while (input && input[*end])
+    while (input[*end])
     {
-        *end =*end + 1;
-        if (input[*end] == quote)
+        if (in_quote && input[*end] == quote)
         {
             right = ft_substrdup(input, start, end);
-            token = ft_strjoin(left, right);
-            free(left);
-            free(right);
             if (quote == '"')
             {
-                token = ft_handle_envar(token, envp);
-                token = ft_exit_status(token);  
+                right = ft_handle_envar(right, envp);
             }
-            ft_add_token(tokens_list, token);
-            *end =*end + 1;
+            left = ft_strjoin(left, right);
+            free(right);
+            in_quote = FALSE;
+            *start = *end + 1;
+        }
+        else if (!in_quote && (input[*end] == '"' || input[*end] == '\''))
+        {
+            right = ft_substrdup(input, start, end);
+            right = ft_handle_envar(right, envp);
+            left = ft_strjoin(left, right);
+            quote = input[*end];
+            in_quote = TRUE;
+            *start = *end + 1;
+        }
+        if (!input[*end + 1] || (!in_quote && ft_iswhitespace(input[*end + 1])))
+        {
+            *end = *end + 1;
+            right = ft_substrdup(input, start, end);
+            right = ft_handle_envar(right, envp);
+            left = ft_strjoin(left, right);
+            free(right);
             *start = *end;
+            ft_add_token(tokens_list, left);
             return (TRUE);
-        }   
+        }
+
+        *end = *end + 1;
     }
+
     if (left)
-        free(left);
-    return (FALSE);
+        ft_add_token(tokens_list, left);
+
+    return (TRUE);
 }
