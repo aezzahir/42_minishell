@@ -84,11 +84,11 @@ void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
         execute_builtin(cmd->cmd_args);
         // return;
     }
-    signal(SIGINT, SIG_IGN);
+    // signal(SIGINT, SIG_IGN);
     pid = fork();
     if (pid == 0)
     {
-        signal(SIGINT, SIG_DFL);
+        // signal(SIGINT, SIG_DFL);
         if (prev_pipe_out != -1)
         {
             dup2(prev_pipe_out, STDIN_FILENO);

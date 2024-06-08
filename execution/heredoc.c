@@ -16,17 +16,17 @@ void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **env
     quoted_delim = FALSE;
     if (!(ft_strchr(delimiter, '"') || ft_strchr(delimiter, '\'')))
         quoted_delim = TRUE;
-    delimiter = remove_quotes(delimiter); 
+    delimiter = remove_quotes(delimiter);
     while (1)
     {
         line = readline("heredoc> ");
-        if (quoted_delim)
-            line = ft_handle_envar(line, envp);
         if (line == NULL || ft_strcmp(line, delimiter) == 0)
         {
             free(line);
             break;
         }
+        if (quoted_delim)
+            line = ft_handle_envar(line, envp);
         tmp = line;
         if (remove_tabs)
         {

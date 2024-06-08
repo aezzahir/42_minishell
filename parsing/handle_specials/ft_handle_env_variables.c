@@ -27,11 +27,11 @@ char *ft_handle_envar(char *token, char **envp)
             i++;
             continue;
         }
-        if (token[i] == '$' && token[i + 1] && (ft_isalnum(token[i + 1]) || token[i + 1] == '"'))
+        if (token[i] == '$' && token[i + 1] && ft_isalnum(token[i + 1]))
         {
             start = i + 1;
             end = start;
-            if (ft_isdigit(token[end]) || token[i + 1] == '"')
+            if (ft_isdigit(token[end]))
                 end++;
             else
                 while (ft_isalnum(token[end]))
