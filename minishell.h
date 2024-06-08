@@ -78,7 +78,7 @@ void	free_split(char **str);
 
 char 	*get_path(char *cmd, char **envp);
 char	*find_path(char **arge);
-
+int ft_is_special_char(char c);
 
 /// Excution part :-)
 
