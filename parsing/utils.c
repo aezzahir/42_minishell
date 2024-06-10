@@ -49,22 +49,22 @@ int ft_special_token_is_a_file(t_list *token)
     || ft_is_special_token(token) == APPEND);
 }
 
-
 char *remove_quotes(char *delim)
 {
     int i;
-    int f;
 
     i = 0;
-    f = 0;
     if (!delim)
         return (NULL);
-    while (delim[i] && (delim[i] == '"' || delim[i] == '\''))
+    while (delim[i])
+    {
+        if (delim[i] == '$' && (delim[i + 1] == '"' || delim[i + 1] == '\''))
+            ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
+        if (delim[i] == '"' || delim[i] == '\'')
+            ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
         i++;
-    f = i;
-    while (delim[f] && delim[f] && !(delim[f] == '"' || delim[f] == '\''))
-        f++;
-    return (ft_substrdup(delim, &i, &f));
+    }
+    return (delim);
 }
 
 char *remove_multiple_whitespaces(char *str)
