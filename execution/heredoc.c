@@ -62,7 +62,7 @@ void concatenate_files(char *final_file, t_list *her_docs, char **envp)
         exit(EXIT_FAILURE);
     }
 
-    current = her_docs;
+    // Open the final file for writing
     int final_fd = open(final_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (final_fd < 0)
     {
@@ -70,11 +70,14 @@ void concatenate_files(char *final_file, t_list *her_docs, char **envp)
         exit(EXIT_FAILURE);
     }
 
+    // Move to the last heredoc in the list
+    current = her_docs;
     while (current->next)
     {
         current = current->next;
     }
 
+    // Create a temporary file for the last heredoc
     char tmp_file[] = "/tmp/minishell_heredocXXXXXX";
     int tmp_fd = mkstemp(tmp_file);
     if (tmp_fd == -1)
@@ -83,18 +86,23 @@ void concatenate_files(char *final_file, t_list *her_docs, char **envp)
         exit(EXIT_FAILURE);
     }
     close(tmp_fd);
+
+    // Handle the last heredoc
     handle_heredoc((char *)current->content, tmp_file, 0, envp);
 
+    // Open the temporary file for reading
     int fd = open(tmp_file, O_RDONLY);
     if (fd < 0)
     {
         perror("open heredoc temp file");
         exit(EXIT_FAILURE);
     }
+
+    // Read from the temporary file and write to the final file
     while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
         write(final_fd, buffer, bytes_read);
+    
     close(fd);
-    unlink(tmp_file); 
-
+    unlink(tmp_file);
     close(final_fd);
 }
