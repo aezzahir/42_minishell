@@ -46,7 +46,7 @@ char *ft_handle_envar(char *token, char **envp)
             token = new_token;
             i = ft_strlen(token) - i - 1;
         }
-        else if (token[i] == '$' && token[i + 1] && (token[i] == '"' || token[i + 1] == '\''))
+        else if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && (token[i + 1] == '"' || token[i + 1] == '\''))
         {
             start = i + 1;
             end = start;

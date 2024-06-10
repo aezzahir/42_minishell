@@ -105,3 +105,38 @@ char *remove_multiple_whitespaces(char *str)
 
     return (result);
 }
+
+int ft_in_quote(char *str, char *address)
+{
+    int i;
+    char quote;
+    int in_quote;
+
+    if (!str || !(address >= str && address <= str + ft_strlen(str)))
+        return (FALSE);
+
+    i = 0;
+    in_quote = FALSE;
+    quote = '\0';
+
+    while (str[i])
+    {
+        if (!in_quote && (str[i] == '"' || str[i] == '\''))
+        {
+            in_quote = TRUE;
+            quote = str[i];
+        }
+        else if (in_quote && str[i] == quote)
+        {
+            in_quote = FALSE;
+            quote = '\0';
+        }
+
+        if (&str[i] == address)
+            return (in_quote);
+
+        i++;
+    }
+
+    return (in_quote);
+}
