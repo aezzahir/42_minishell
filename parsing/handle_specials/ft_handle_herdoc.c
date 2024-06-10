@@ -8,20 +8,40 @@ extern int	g_status;
  */
 
 
-
 void ft_handle_heredoc(t_list **tokens_list, char *input, int *end)
 {
     char *delimiter = NULL;
     int start = *end;
-    
+    int in_quote = FALSE;
+    char quote = '\0';
+
     ft_add_token(tokens_list, ft_strdup("<<"));
     while (input && ft_iswhitespace(input[*end]))
         (*end)++;
+
     start = *end;
-    while (input && input[*end] && !ft_is_special_char(input[*end]) && !ft_iswhitespace(input[*end]))
+    while (input && input[*end])
+    {
+        if (input[*end] == quote)
+        {
+            in_quote = FALSE;
+            quote = '\0';
+        }
+        else if (!in_quote && (input[*end] == '"' || input[*end] == '\''))
+        {
+            in_quote = TRUE;
+            quote = input[*end];
+        }
+        else if (!in_quote && (ft_is_special_char(input[*end]) || ft_iswhitespace(input[*end])))
+        {
+            break;
+        }
         (*end)++;
+    }
+
     if (*end > start)
         delimiter = ft_substrdup(input, &start, end);
+
     if (delimiter)
         ft_add_token(tokens_list, delimiter);
 }

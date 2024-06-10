@@ -58,10 +58,21 @@ char *remove_quotes(char *delim)
         return (NULL);
     while (delim[i])
     {
-        if (delim[i] == '$' && (delim[i + 1] == '"' || delim[i + 1] == '\''))
+        if (delim[i] == '$' && !ft_in_quote(delim, &delim[i]) && (delim[i + 1] == '"' || delim[i + 1] == '\''))
+        {
             ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
+            i--;
+        }
+        i++;
+    }
+    i = 0;
+    while (delim[i])
+    {
         if (delim[i] == '"' || delim[i] == '\'')
+        {
             ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
+            i--;
+        }
         i++;
     }
     return (delim);
