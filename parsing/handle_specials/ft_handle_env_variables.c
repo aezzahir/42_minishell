@@ -22,7 +22,7 @@ char *ft_handle_envar(char *token, char **envp)
     if (!token)
         return NULL;
     while (token[i]) {
-        if (token[i] == '$' && token[i + 1] && ft_isalnum(token[i + 1]))
+        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && ft_isalnum(token[i + 1]))
         {
             start = i + 1;
             end = start;
@@ -80,7 +80,7 @@ char *ft_exit_status(char *token)
 
     while (token[i])
     {
-        if (token[i] == '$' && token[i + 1] && token[i + 1] == '?')
+        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && token[i + 1] == '?')
         {
             start = i;
             end = i + 2;
