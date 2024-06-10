@@ -46,8 +46,9 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
         {
             right = ft_substrdup(input, start, end);
             right = ft_handle_envar(right, envp);
+            if (left[ft_strlen(left) - 1] == '$')
+                left[ft_strlen(left) - 1] = '\0';
             left = ft_strjoin(left, right);
-
             quote = input[*end];
             in_quote = TRUE;
             *start = *end + 1;
