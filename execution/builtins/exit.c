@@ -2,17 +2,15 @@
 
 void exit_shell(char *arg)
 {
-    if (arg == NULL)
-    {
-        exit(0);
-    }
+    int status;
 
+    if (arg == NULL)
+        exit(0);
     if (!is_number(arg))
     {
         print_error("numeric argument required", arg);
         exit(255);
     }
-
-    int status = atoi(arg);
+    status = atoi(arg);
     exit(status);
 }

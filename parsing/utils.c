@@ -35,7 +35,10 @@ int ft_is_special_token(t_list *token)
     else
         return (NORMAL);
 }
-
+int ft_is_special_char(char c)
+{
+    return (c == '>' || c == '<' || c == '|');
+}
 
 int ft_special_token_is_a_file(t_list *token)
 {

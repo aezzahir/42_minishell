@@ -22,13 +22,13 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
     right = NULL;
     in_quote = TRUE;
 
-    left = ft_substrdup(input, start, end);
+    left = ft_substrdup(input, start, end + 1);
     left = ft_handle_envar(left, envp);
     *end = *end + 1;
     *start = *end;
     if (ft_is_special_token(ft_lstlast(*tokens_list)) == HERDOC)
     {
-        right = ft_strjoin("'", left);
+        right = ft_strjoin(left, "'");
         free(left);
         left = right;
         right = NULL;
@@ -70,7 +70,6 @@ int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, 
 
         *end = *end + 1;
     }
-
     if (left)
         ft_add_token(tokens_list, left);
 

@@ -34,3 +34,9 @@ void print_error(const char *msg, const char *arg)
         ft_putendl_fd((char *)arg, STDERR_FILENO);
     }
 }
+
+void ft_err(char *msg)
+{
+    perror(msg);
+    exit(EXIT_FAILURE);
+}

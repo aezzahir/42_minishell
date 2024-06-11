@@ -18,7 +18,7 @@ void ft_handle_heredoc(t_list **tokens_list, char *input, int *end)
     while (input && ft_iswhitespace(input[*end]))
         (*end)++;
     start = *end;
-    while (input && input[*end] && !ft_iswhitespace(input[*end]))
+    while (input && input[*end] && !ft_is_special_char(input[*end]) && !ft_iswhitespace(input[*end]))
         (*end)++;
     if (*end > start)
         delimiter = ft_substrdup(input, &start, end);

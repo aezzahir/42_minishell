@@ -13,6 +13,7 @@ bool is_builtin(char *cmd)
 
 void execute_builtin(char *args[])
 {
+    // printf("this is the builtin functions %s", args[0]);
     if (ft_strcmp(args[0], "cd") == 0)
         cd(args[1]);
     else if (ft_strcmp(args[0], "echo") == 0)

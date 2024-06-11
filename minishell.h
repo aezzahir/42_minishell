@@ -78,7 +78,7 @@ void	free_split(char **str);
 
 char 	*get_path(char *cmd, char **envp);
 char	*find_path(char **arge);
-
+int ft_is_special_char(char c);
 
 /// Excution part :-)
 
@@ -104,7 +104,8 @@ void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp);
 
 void setup_default_env(void);
 
-
+// utils
+void ft_err(char *msg);
 int is_number(const char *str);
 void print_env_vars(void);
 void print_error(const char *msg, const char *arg);
