@@ -49,22 +49,33 @@ int ft_special_token_is_a_file(t_list *token)
     || ft_is_special_token(token) == APPEND);
 }
 
-
 char *remove_quotes(char *delim)
 {
     int i;
-    int f;
 
     i = 0;
-    f = 0;
     if (!delim)
         return (NULL);
-    while (delim[i] && (delim[i] == '"' || delim[i] == '\''))
+    while (delim[i])
+    {
+        if (delim[i] == '$' && !ft_in_quote(delim, &delim[i]) && (delim[i + 1] == '"' || delim[i + 1] == '\''))
+        {
+            ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
+            i--;
+        }
         i++;
-    f = i;
-    while (delim[f] && delim[f] && !(delim[f] == '"' || delim[f] == '\''))
-        f++;
-    return (ft_substrdup(delim, &i, &f));
+    }
+    i = 0;
+    while (delim[i])
+    {
+        if (delim[i] == '"' || delim[i] == '\'')
+        {
+            ft_memcpy(&delim[i], &delim[i + 1], ft_strlen(&delim[i + 1]) + 1);
+            i--;
+        }
+        i++;
+    }
+    return (delim);
 }
 
 char *remove_multiple_whitespaces(char *str)
@@ -104,4 +115,39 @@ char *remove_multiple_whitespaces(char *str)
     }
 
     return (result);
+}
+
+int ft_in_quote(char *str, char *address)
+{
+    int i;
+    char quote;
+    int in_quote;
+
+    if (!str || !(address >= str && address <= str + ft_strlen(str)))
+        return (FALSE);
+
+    i = 0;
+    in_quote = FALSE;
+    quote = '\0';
+
+    while (str[i])
+    {
+        if (!in_quote && (str[i] == '"' || str[i] == '\''))
+        {
+            in_quote = TRUE;
+            quote = str[i];
+        }
+        else if (in_quote && str[i] == quote)
+        {
+            in_quote = FALSE;
+            quote = '\0';
+        }
+
+        if (&str[i] == address)
+            return (in_quote);
+
+        i++;
+    }
+
+    return (in_quote);
 }

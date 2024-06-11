@@ -12,10 +12,12 @@ void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **env
         perror("open temp file");
         exit(EXIT_FAILURE);
     }
+    printf("delimiter: %s\n", delimiter);
     quoted_delim = FALSE;
     if (!(ft_strchr(delimiter, '"') || ft_strchr(delimiter, '\'')))
         quoted_delim = TRUE;
     delimiter = remove_quotes(delimiter);
+    printf("delimiter: %s\n", delimiter);
     while (1)
     {
         line = readline("heredoc> ");

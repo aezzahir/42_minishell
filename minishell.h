@@ -125,7 +125,7 @@ int ft_is_special_token(t_list *token); // is it a PIPE APPEND OR WHAT
 int ft_special_token_is_a_file(t_list *token);
 char *remove_quotes(char *delim);
 char *remove_multiple_whitespaces(char *str);
-
+int ft_in_quote(char *str, char *address);
 
 
 

@@ -22,12 +22,7 @@ char *ft_handle_envar(char *token, char **envp)
     if (!token)
         return NULL;
     while (token[i]) {
-        if (token[i] == '$' && token[i + 1] == '$')
-        {
-            i++;
-            continue;
-        }
-        if (token[i] == '$' && token[i + 1] && ft_isalnum(token[i + 1]))
+        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && ft_isalnum(token[i + 1]))
         {
             start = i + 1;
             end = start;
@@ -36,14 +31,12 @@ char *ft_handle_envar(char *token, char **envp)
             else
                 while (ft_isalnum(token[end]))
                     end++;
-            i = end - 1;
-
+            
+            i = ft_strlen(token) - end;
             var_name = ft_substr(token, start, end - start);
             var_value = getenv(var_name);
             free(var_name);
-
-            
-            left = ft_substr(token, 1, start - 1);
+            left = ft_substr(token, 0, start - 1);
             right = ft_substr(token, end, ft_strlen(token) - end);
             new_token = ft_strjoin(left, var_value);
             new_token = ft_strjoin(new_token, right);
@@ -51,7 +44,22 @@ char *ft_handle_envar(char *token, char **envp)
             free(right);
             free(token);
             token = new_token;
-        } 
+            i = ft_strlen(token) - i - 1;
+        }
+        else if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && (token[i + 1] == '"' || token[i + 1] == '\''))
+        {
+            start = i + 1;
+            end = start;
+            left = ft_substr(token, 0, start - 1);
+            right = ft_substr(token, end, ft_strlen(token) - end);
+            new_token = ft_strjoin(left, right);
+            free(left);
+            free(right);
+            free(token);
+            token = new_token;
+            start = 0;
+            end = 0;
+        }
         i++;
     }
 
@@ -72,12 +80,7 @@ char *ft_exit_status(char *token)
 
     while (token[i])
     {
-        if (token[i] == '$' && token[i + 1] == '$')
-        {
-            i++;
-            continue;
-        }
-        if (token[i] == '$' && token[i + 1] && token[i + 1] == '?')
+        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && token[i + 1] == '?')
         {
             start = i;
             end = i + 2;
@@ -95,8 +98,7 @@ char *ft_exit_status(char *token)
             i = start + ft_strlen(exit_status);
             free(exit_status);
         }
-        i++;   
+        i++;
     }
-
     return token;
 }
