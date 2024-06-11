@@ -27,17 +27,15 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
         return;
     while (input && input[end])
     {
-        if (ft_iswhitespace(input[end]))
+        if (ft_iswhitespace(input[end]) || ft_is_special_char(input[end]))
         {
-            if (end > start)
-            {
-                token = ft_substrdup(input, &start, &end);
-                token = ft_handle_envar(token, envp);
-                ft_add_token(tokens_list, token);
-            }
-            start = ++end;
+           
+            token = ft_substrdup(input, &start, &end);
+            token = ft_handle_envar(token, envp);
+            ft_add_token(tokens_list, token);
+            start = end;
         }
-        else if ((input[end] == '"' || input[end] == '\''))
+        if ((input[end] == '"' || input[end] == '\''))
         {
             if (!ft_handle_quote(tokens_list,  envp, input, &start, &end, input[end]))
                 break;
@@ -60,10 +58,7 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp)
             token = ft_substrdup(input, &start, &end);
             ft_add_token(tokens_list, token);
         }
-        else
-        {
-            end++;
-        }
+        end++;
     }
 
     if (input && start < end)
