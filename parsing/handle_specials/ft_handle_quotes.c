@@ -12,66 +12,72 @@ extern int	g_status;
 
 
 
-int ft_handle_quote(t_list **tokens_list, char **envp, char *input, int *start, int *end, char quote)
+char *ft_remove_quotes(char *str)
 {
-    char    *left;
-    char    *right;
-    int     in_quote;
+    if (!str) return NULL;
 
-    left = NULL;
-    right = NULL;
-    in_quote = TRUE;
+    char quote;
+    int i = 0;
+    int j = 0;
+    int in_quote = 0;
+    char *result = malloc(strlen(str) + 1);  // Allocate new memory
 
-    left = ft_substrdup(input, start, end + 1);
-    left = ft_handle_envar(left, envp);
-    *end = *end + 1;
-    *start = *end;
-    if (ft_is_special_token(ft_lstlast(*tokens_list)) == HERDOC)
+    if (!result) return NULL;  // Check for allocation failure
+
+    quote = '\0';
+    while (str[i])
     {
-        right = ft_strjoin(left, "'");
-        free(left);
-        left = right;
-        right = NULL;
+        if (!in_quote && (str[i] == '\'' || str[i] == '"'))
+        {
+            in_quote = 1;
+            quote = str[i];
+            i++;
+        }
+        else if (in_quote && str[i] == quote)
+        {
+            in_quote = 0;
+            quote = '\0';
+            i++;
+        }
+        else
+        {
+            result[j++] = str[i++];
+        }
     }
-    while (input[*end])
+    result[j] = '\0';
+
+    return result;
+}
+
+void process_token(t_token *token)
+{
+    if (token->type == TOKEN_WORD)
     {
-        if (in_quote && input[*end] == quote)
+        char *unquoted = ft_remove_quotes(token->value);
+        if (unquoted)
         {
-            right = ft_substrdup(input, start, end);
-            if (quote == '"')
-            {
-                right = ft_handle_envar(right, envp);
-            }
-            left = ft_strjoin(left, right);
-            free(right);
-            in_quote = FALSE;
-            *start = *end + 1;
+            free(token->value);  // Free the original value
+            token->value = unquoted;  // Assign the new unquoted value
         }
-        else if (!in_quote && (input[*end] == '"' || input[*end] == '\''))
-        {
-            right = ft_substrdup(input, start, end);
-            right = ft_handle_envar(right, envp);
-            left = ft_strjoin(left, right);
-            quote = input[*end];
-            in_quote = TRUE;
-            *start = *end + 1;
-        }
-        if (!input[*end + 1] || (!in_quote && ft_iswhitespace(input[*end + 1])))
-        {
-            *end = *end + 1;
-            right = ft_substrdup(input, start, end);
-            right = ft_handle_envar(right, envp);
-            left = ft_strjoin(left, right);
-            free(right);
-            *start = *end;
-            ft_add_token(tokens_list, left);
-            return (TRUE);
-        }
-
-        *end = *end + 1;
     }
-    if (left)
-        ft_add_token(tokens_list, left);
+}
 
-    return (TRUE);
+void ft_remove_quotes_from_tokens(t_list *tokens_list)
+{
+    t_list *current = tokens_list;
+    t_token *token;
+
+    while (current)
+    {
+        token = (t_token *)current->content;
+
+        if (token->type == TOKEN_WORD)
+        {
+            char *unquoted_value = ft_remove_quotes(token->value);
+            free(token->value);  // Free the original value
+            token->value = unquoted_value;  // Assign the new unquoted value
+        }
+
+        current = current->next;
+    }
 }

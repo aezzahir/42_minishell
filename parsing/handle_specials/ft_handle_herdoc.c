@@ -9,19 +9,22 @@ extern int	g_status;
 
 
 
-void ft_handle_heredoc(t_list **tokens_list, char *input, int *end)
+void ft_handle_heredoc(t_list **tokens_list)
 {
-    char *delimiter = NULL;
-    int start = *end;
-    
-    ft_add_token(tokens_list, ft_strdup("<<"));
-    while (input && ft_iswhitespace(input[*end]))
-        (*end)++;
-    start = *end;
-    while (input && input[*end] && !ft_is_special_char(input[*end]) && !ft_iswhitespace(input[*end]))
-        (*end)++;
-    if (*end > start)
-        delimiter = ft_substrdup(input, &start, end);
-    if (delimiter)
-        ft_add_token(tokens_list, delimiter);
+    t_list *current = *tokens_list;
+    t_token *token;
+    t_token *next_token;
+
+    while (current && current->next)
+    {
+        token = (t_token *)current->content;
+        next_token = (t_token *)current->next->content;
+
+        if (token->type == TOKEN_HEREDOC && next_token->type == TOKEN_WORD)
+        {
+            next_token->type = HERDOC_DELIM;
+        }
+
+        current = current->next;
+    }
 }

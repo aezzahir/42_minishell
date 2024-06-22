@@ -1,63 +1,59 @@
 #include "../minishell.h"
 extern int g_status;
+// this function will be applied when a token is file ... it will add the next file_name to the corresspanding list
+void ft_parse_files(t_cmd *cmd, t_list *token)
+{
+    t_token *content;
+    t_list  **list_of_files;
 
+    list_of_files = NULL;
+    if (token && token->content && ft_is_file((t_token *)token->content))
+    {
+        content = (t_token *)(token->content);
+        if (content->type == TOKEN_REDIRECT_IN)
+            list_of_files = &cmd->in_files;
+        else if (content->type == TOKEN_REDIRECT_OUT)
+            list_of_files = &cmd->out_files;
+        else if (content->type == TOKEN_APPEND)
+            list_of_files = &cmd->out_files_app;
+        else if (content->type == TOKEN_HEREDOC)
+            list_of_files = &cmd->her_docs;
+        else if (content->type == TOKEN_IGNORE)
+            list_of_files = &cmd->ignored_files;
+        token = token->next;
+        if (token && token->content)
+            ft_add_node(list_of_files, ((t_token *)token->content)->value);
+    }
+}
 
-
-void ft_add_args_to_cmd(t_cmd *cmd, t_list *token, int args_num)
+void ft_parse_cmd_args(t_cmd *cmd, t_list *head, int n_args)
 {
     int i;
-    cmd->cmd_args = (char **)malloc((args_num + 1) * sizeof(char *));
+    t_token *token;
+
+    if (!cmd || !head)
+        return;
+    cmd->cmd_args = (char **)malloc((n_args + 1) * sizeof(char *));
     if (!cmd->cmd_args)
         return;
     i = 0;
-    while (token && i < args_num)
+    while (head && i < n_args)
     {
-        if (ft_special_token_is_a_file(token))
-			token = token->next->next;
-        if (ft_is_special_token(token) == NORMAL)
+        token = (t_token *)(head->content);
+        if (ft_is_file(token) && head->next)
+			head = head->next->next;
+        else if (token->type == TOKEN_WORD)
         {
-           cmd->cmd_args[i] = (char *)(token->content);
-            i++; 
+            cmd->cmd_args[i] = token->value;
+            i++;
+            ft_print_nodes((void *)token);
         }
-        token = token->next;
+        head = head->next;
     }
     cmd->cmd_args[i] = NULL;
 }
 
-void ft_parse_files(t_cmd *cmd, t_list *token)
-{
-    if (token && ft_is_special_token(token) == INFILE)
-    {
-        token = token->next;
-        ft_add_token(&cmd->in_files, token->content);
-    }
-    else if (token && ft_is_special_token(token) == TRUNC)
-    {
-        token = token->next;
-        ft_add_token(&cmd->out_files, token->content);
-    }
-    else if (token && ft_is_special_token(token) == APPEND)
-    {
-        token = token->next;
-        ft_add_token(&cmd->out_files_app, token->content);
-    }
-    else if (token && ft_is_special_token(token) == HERDOC)
-    {
-        token = token->next;
-        ft_add_token(&cmd->her_docs, token->content);
-    }
-    else if (token && ft_is_special_token(token) == IGNORE)
-    {
-        token = token->next;
-        ft_add_token(&cmd->ignored_files, token->content);
-    }
-	else
-		printf("ERROR PARSING FILES\n");
-}
-
-
-
-void ft_initialize(t_cmd *cmd)
+void ft_initialize_cmd(t_cmd *cmd)
 {
     cmd->cmd_args = NULL;
     cmd->cmd_path = NULL;
@@ -68,33 +64,35 @@ void ft_initialize(t_cmd *cmd)
     cmd->her_docs = NULL;
 }
 
-t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
+t_cmd *ft_parse_cmds(t_list *head, char **envp)
 {
     t_cmd *cmd;
-	t_list *token;
-    int args_num;
-    if (!first_token)
-        printf("tokens list is empty!\n");
-    cmd = (t_cmd *)malloc(sizeof(t_cmd));
-    if (!cmd)
-        return (NULL);
-    ft_initialize(cmd);
-    args_num = 0;
-	token = first_token;
-    while (token && ft_is_special_token(token) != PIPE)
-    {
-        if (ft_special_token_is_a_file(token))
-        {
-			ft_parse_files(cmd, token);
-			token = token->next;
+    t_token *token;
+    t_list *the_head;
+    int n_args;
 
+    n_args = 0;
+    cmd = (t_cmd *)malloc(sizeof(t_cmd));
+    if (!cmd || !head)
+        return (NULL);
+    ft_initialize_cmd(cmd);
+    the_head = head;
+    while (head)
+    {
+        token = (t_token *)(head->content);
+        if (token && token->type == TOKEN_PIPE)
+            break;
+        else if (ft_is_file(token))
+        {
+			ft_parse_files(cmd, head);
+			head = head->next;
 		}
-        else if (ft_is_special_token(token) == NORMAL)
-            args_num++;
-        if (token)
-            token = token->next;
+        else if (token->type == TOKEN_WORD)
+            n_args++;
+        if (head)
+            head = head->next;
     }
-    ft_add_args_to_cmd(cmd, first_token, args_num);
+    ft_parse_cmd_args(cmd, the_head, n_args);
     if (cmd->cmd_args && cmd->cmd_args[0])
         cmd->cmd_path = get_path(cmd->cmd_args[0], envp);
     return (cmd);
@@ -102,20 +100,27 @@ t_cmd *ft_parse_cmds(t_list *first_token, char **envp)
 
 
 
-t_list *get_cmds_list(t_list *token, char **envp)
+t_list *get_cmds_list(t_list *head, char **envp)
 {
     t_list *cmds;
+    t_token *token;
+
     cmds = NULL;
-    while (token)
+    while (head)
     {
-        if (ft_is_special_token(token) != PIPE)
+        token = (t_token *)(head->content);
+        if (token && token->type != TOKEN_PIPE)
         {
-            ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(token, envp)));
-            while (token && ft_is_special_token(token) != PIPE)
-                token = token->next;
+            ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(head, envp)));
+            while (head && ((t_token *)(head->content))->type != TOKEN_PIPE)
+                head = head->next;
+            ft_print_nodes((void *) token);
         }
-        if (token)
-            token = token->next;
+        else
+            head = head->next;
     }
     return (cmds);
 }
+
+
+

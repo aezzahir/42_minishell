@@ -11,42 +11,37 @@ int ft_iswhitespace(char c)
 }
 
 
-int ft_is_special_token(t_list *token)
+int ft_token_type(char *token_content)
 {
-    char *token_content;
 
-    if (!token)
-        return (-1);
-    token_content = (char *)(token->content);
-    if (!token_content)
-        return (EMPTY);
-    else if (ft_strncmp(token_content, "|", 2) == 0)
-        return (PIPE);
+    if (ft_strncmp(token_content, "|", 2) == 0)
+        return (TOKEN_PIPE);
     else if (ft_strncmp(token_content, "<>", 3) == 0)
-        return (IGNORE);
+        return (TOKEN_IGNORE);
     else if (ft_strncmp(token_content, ">>", 3) == 0)
-        return (APPEND);
+        return (TOKEN_APPEND);
     else if (ft_strncmp(token_content, "<<", 3) == 0)
-        return (HERDOC);
+        return (TOKEN_HEREDOC);
     else if (ft_strncmp(token_content, "<", 2) == 0)
-        return (INFILE);
+        return (TOKEN_REDIRECT_IN);
     else if (ft_strncmp(token_content, ">", 2) == 0)
-        return (TRUNC);
+        return (TOKEN_REDIRECT_OUT);
     else
-        return (NORMAL);
+        return (TOKEN_WORD);
 }
+
 int ft_is_special_char(char c)
 {
     return (c == '>' || c == '<' || c == '|');
 }
 
-int ft_special_token_is_a_file(t_list *token)
+int ft_is_file(t_token *token)
 {
-    return (ft_is_special_token(token) == INFILE
-    || ft_is_special_token(token) == TRUNC
-    || ft_is_special_token(token) == IGNORE
-    || ft_is_special_token(token) == HERDOC
-    || ft_is_special_token(token) == APPEND);
+    return (token && (token->type == TOKEN_REDIRECT_IN
+    || token->type == TOKEN_REDIRECT_OUT
+    || token->type == TOKEN_IGNORE
+    || token->type == TOKEN_HEREDOC
+    || token->type == TOKEN_APPEND));
 }
 
 
@@ -64,7 +59,7 @@ char *remove_quotes(char *delim)
     f = i;
     while (delim[f] && delim[f] && !(delim[f] == '"' || delim[f] == '\''))
         f++;
-    return (ft_substrdup(delim, &i, &f));
+    return (ft_strndup(&delim[i], &delim[f] - &delim[i]));
 }
 
 char *remove_multiple_whitespaces(char *str)
