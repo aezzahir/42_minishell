@@ -72,13 +72,13 @@ void ft_print_prompt(void *content)
 
     i = 0;
     cmd = (t_cmd *)content;
-    printf("\nCommand args:   ");
+    printf("\nCommand args: ");
     while (cmd->cmd_args[i])
     {
         printf("%s, ",cmd->cmd_args[i]);
         i++;
     }
-    printf("\n Command PATH --> %s\n", cmd->cmd_path);
+    printf("\nCommand PATH: %s\n", cmd->cmd_path);
     if (cmd->in_files)
     {
         printf("\n in_files : ");
