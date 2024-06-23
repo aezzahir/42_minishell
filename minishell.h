@@ -83,9 +83,13 @@ void ft_add_node(t_list **tokens_list, char *content);
 // 1.1 - handles herdoc quotes and enviremental variables
 
 
+// -------------------- Handles Syntax Errors ---------------------------|
+int check_syntax_errors(t_list *tokens);                              // |
+int is_redirection(t_token_type type);                                // |
+int	         unclosed_qoutes(char *input);                            // |
+int syntax_error(char *token);                                        // |
+//------------------------------------------------------------------------
 
-int 		ft_handle_syntax_errors(t_list **tokens_list);
-int	         unclosed_qoutes(char *input);
 
 char *ft_strndup(const char *s, size_t n);
 

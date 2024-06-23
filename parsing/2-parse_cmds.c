@@ -41,12 +41,11 @@ void ft_parse_cmd_args(t_cmd *cmd, t_list *head, int n_args)
     {
         token = (t_token *)(head->content);
         if (ft_is_file(token) && head->next)
-			head = head->next->next;
+			head = head->next;
         else if (token->type == TOKEN_WORD)
         {
             cmd->cmd_args[i] = token->value;
             i++;
-            ft_print_nodes((void *)token);
         }
         head = head->next;
     }
@@ -114,7 +113,6 @@ t_list *get_cmds_list(t_list *head, char **envp)
             ft_lstadd_back(&cmds, ft_lstnew((void *)ft_parse_cmds(head, envp)));
             while (head && ((t_token *)(head->content))->type != TOKEN_PIPE)
                 head = head->next;
-            ft_print_nodes((void *) token);
         }
         else
             head = head->next;

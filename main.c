@@ -79,16 +79,31 @@ void ft_print_prompt(void *content)
         i++;
     }
     printf("\n Command PATH --> %s\n", cmd->cmd_path);
-    printf("\n in_files : ");
-    ft_lstiter(cmd->in_files, ft_lst_nodes);
-    printf("\n out_files : ");
-    ft_lstiter(cmd->out_files, ft_lst_nodes);
-    printf("\n out_files_app : ");
-    ft_lstiter(cmd->out_files_app, ft_lst_nodes);
-     printf("\n her_docs : ");
-    ft_lstiter(cmd->her_docs, ft_lst_nodes);
-    printf("\n ignored_files : ");
-    ft_lstiter(cmd->ignored_files, ft_lst_nodes);
+    if (cmd->in_files)
+    {
+        printf("\n in_files : ");
+        ft_lstiter(cmd->in_files, ft_lst_nodes);
+    }
+    if (cmd->out_files)
+    {
+        printf("\n out_files : ");
+        ft_lstiter(cmd->out_files, ft_lst_nodes);
+    }
+    if (cmd->out_files_app)
+    {
+        printf("\n out_files_app : ");
+        ft_lstiter(cmd->out_files_app, ft_lst_nodes);
+    }
+    if (cmd->her_docs)
+    {
+        printf("\n her_docs : ");
+        ft_lstiter(cmd->her_docs, ft_lst_nodes);
+    }
+    if (cmd->ignored_files)
+    {
+        printf("\n ignored_files : ");
+        ft_lstiter(cmd->ignored_files, ft_lst_nodes);
+    }
     printf("\n");
 }
 
@@ -137,15 +152,15 @@ int main(int argc, char **argv, char *envp[])
         {
             add_history(cmd_line);
             ft_split_tokens(&head, cmd_line, envp);
-            ft_lstiter(head, ft_print_nodes);
-            printf("\n ->After expanding handling hrdoc and quotes :\n");
+            //ft_lstiter(head, ft_print_nodes);
+            //printf("\n ->After expanding handling hrdoc and quotes :\n");
             ft_handle_heredoc(&head);
             ft_expand_variables(head, envp);
             ft_remove_quotes_from_tokens(head);
-            ft_lstiter(head, ft_print_nodes);
-            printf("\n");
+            //ft_lstiter(head, ft_print_nodes);
+            //printf("\n");
             cmds = get_cmds_list(head, envp);
-            ft_lstiter(cmds, ft_print_prompt);
+            //ft_lstiter(cmds, ft_print_prompt);
             // ft_exec(cmds, envp);
             ft_lstclear(&head, free_token);
         }

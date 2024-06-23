@@ -12,7 +12,7 @@ extern int	g_status;
 
 
 
-char *ft_remove_quotes(char *str)
+char *ft_remove_quotes(char *str) // remember  to free this str 
 {
     if (!str) return NULL;
 
@@ -20,10 +20,9 @@ char *ft_remove_quotes(char *str)
     int i = 0;
     int j = 0;
     int in_quote = 0;
-    char *result = malloc(strlen(str) + 1);  // Allocate new memory
 
-    if (!result) return NULL;  // Check for allocation failure
-
+    char *result = malloc(strlen(str) + 1);
+    if (!result) return NULL;
     quote = '\0';
     while (str[i])
     {
@@ -31,21 +30,17 @@ char *ft_remove_quotes(char *str)
         {
             in_quote = 1;
             quote = str[i];
-            i++;
         }
         else if (in_quote && str[i] == quote)
         {
             in_quote = 0;
             quote = '\0';
-            i++;
         }
         else
-        {
-            result[j++] = str[i++];
-        }
+            result[j++] = str[i];
+        i++;
     }
     result[j] = '\0';
-
     return result;
 }
 

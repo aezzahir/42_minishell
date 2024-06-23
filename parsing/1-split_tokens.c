@@ -115,4 +115,6 @@ void ft_split_tokens(t_list **tokens_list, char *input, char **envp) {
         token = strndup(token_start, input - token_start);
         ft_add_token(tokens_list, token, TOKEN_WORD);
     }
+    if (tokens_list)
+        check_syntax_errors(*tokens_list);
 }
