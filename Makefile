@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra 
  
 LIBFT = libft/libft.a
 
@@ -53,5 +53,9 @@ fclean: clean
 	make -C libft fclean
 
 re: fclean all
+
+
+leaks: $(NAME)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./minishell
 
 .PHONY: all clean fclean re

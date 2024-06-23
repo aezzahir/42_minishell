@@ -160,7 +160,7 @@ int main(int argc, char **argv, char *envp[])
             //ft_lstiter(head, ft_print_nodes);
             //printf("\n");
             cmds = get_cmds_list(head, envp);
-            //ft_lstiter(cmds, ft_print_prompt);
+            ft_lstiter(cmds, ft_print_prompt);
             // ft_exec(cmds, envp);
             ft_lstclear(&head, free_token);
         }

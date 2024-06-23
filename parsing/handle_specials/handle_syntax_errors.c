@@ -24,7 +24,6 @@ int check_syntax_errors(t_list *tokens)
         }
         node = node->next;
     }
-    g_status = 2;
     return (0);
 }
 
@@ -50,6 +49,7 @@ int		unclosed_qoutes(char *input)
 
     i = 0;
     n_quote = 0;
+    quote = '\0';
     while (input[i])
     {
         if((input[i] == '"' || input[i] == '\'') && quote == '\0')
@@ -65,7 +65,6 @@ int		unclosed_qoutes(char *input)
     if (n_quote != 0)
     {
         ft_putstr_fd("minishell: syntax error :unclosed quotes\n", 2);
-        g_status = 2;
         return (FALSE);
     }
     return (TRUE);
