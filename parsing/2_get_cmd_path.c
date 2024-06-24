@@ -34,13 +34,13 @@ char *get_path(char *cmd, char **envp)
         free(tmp);
         if (access(path, F_OK) == 0)
         {
-            free_split(paths);
+            free_str_array(paths);
             return (path);
         }
         free(path);
         i++;
     }
-    free_split(paths);
+    free_str_array(paths);
     return (NULL);
 }
 

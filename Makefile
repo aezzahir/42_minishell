@@ -5,7 +5,7 @@ LIBFT = libft/libft.a
 
 SRC_FILES = main.c \
 			parsing/1-split_tokens.c \
-			parsing/free_split.c \
+			parsing/ft_free.c \
 			parsing/ft_substrdup.c \
 			parsing/utils.c \
 			parsing/handle_specials/ft_handle_env_variables.c \

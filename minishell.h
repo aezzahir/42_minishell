@@ -109,8 +109,10 @@ t_list *get_cmds_list(t_list *head, char **envp);
 
 
 
-//
-void	free_split(char **str);
+// ---------------------------- Free allocated stuffs ------------------------------------
+void	free_str_array(char **str);
+void    free_token(void *ptr);
+void    free_cmd(void *ptr);
 
 char 	*get_path(char *cmd, char **envp);
 char	*find_path(char **arge);

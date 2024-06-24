@@ -3,18 +3,7 @@
 
 int g_status;
 
-void free_token(void *ptr)
-{
-    t_token *token;
 
-    token = (t_token *)ptr;
-    if (token)
-    {
-        if (token->value)
-            free(token->value);
-        free(token);
-    }
-}
 void ft_lst_nodes(void *content)
 {
     (void)((char *)content);
@@ -163,6 +152,7 @@ int main(int argc, char **argv, char *envp[])
             ft_lstiter(cmds, ft_print_prompt);
             // ft_exec(cmds, envp);
             ft_lstclear(&head, free_token);
+            ft_lstclear(&cmds, free_cmd);
         }
         free(cmd_line);
     }
