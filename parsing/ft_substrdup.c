@@ -11,27 +11,27 @@ extern int	g_status;
  *          (e.g., *start is greater than *end, or either index is out of bounds).
 */
 
-char	*ft_substrdup(const char *str, int *start, int *end)
-{
-	char	*ptr;
-	int	len;
-	int	i;
 
-	len = ft_strlen(str);
-    if (!(*start >= 0 && *end <= len && *start <= *end))
-        return (NULL);
-    
-    len = *end - *start;
-	ptr = (char *)malloc((len + 1) * sizeof(char));
-	if (ptr == NULL)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		ptr[i] = str[*start + i];
-		i++;
-	}
-	ptr[i] = '\0';
-	*start = *end;
-	return (ptr);
+char *ft_strndup(const char *s, size_t n)
+{
+    char *result;
+    size_t len = 0;
+
+    // Find the length of the string or n, whichever is smaller
+    while (len < n && s[len] != '\0')
+        len++;
+
+    // Allocate memory for the new string
+    result = (char *)malloc(len + 1);
+    if (!result)
+        return NULL;
+
+    // Copy the characters
+    for (size_t i = 0; i < len; i++)
+        result[i] = s[i];
+
+    // Null-terminate the new string
+    result[len] = '\0';
+
+    return result;
 }

@@ -4,14 +4,18 @@ int create_unique_temp_file(char *template, int num)
 {
     char final_file[256];
     int fd;
-    
     sprintf(final_file, "%s%05d", template, num);
+
     fd = open(final_file, O_CREAT | O_EXCL | O_RDWR, 0600);
     if (fd == -1 && errno == EEXIST) {
         return create_unique_temp_file(template, num + 1);
     }
-    if (fd == -1) 
-        ft_err("open unique final heredoc temp file");
+
+    if (fd == -1) {
+        perror("open unique final heredoc temp file");
+        exit(EXIT_FAILURE);
+    }
+
     strcpy(template, final_file);
     return fd;
 }
@@ -19,31 +23,34 @@ int create_unique_temp_file(char *template, int num)
 static void handle_redirections(t_cmd *cmd, char **envp)
 {
     t_list *current;
-
+    char final_file_template[] = "/tmp/minishell_final_heredoc";
     current = cmd->in_files;
-    while (current)
+    while (current && current->content)
     {
         handle_input_redirection((char *)current->content);
         current = current->next;
     }
     if (cmd->her_docs)
     {
-        char final_file[] = "/tmp/minishell_final_heredocXXXXXX";
-        int final_fd = mkstemp(final_file);
-        if (final_fd == -1)
-            ft_err("mkstemp");
+        int final_fd = create_unique_temp_file(final_file_template, 0);
         close(final_fd);
-        concatenate_files(final_file, cmd->her_docs, envp);
-        int fd = open(final_file, O_RDONLY);
+        concatenate_files(final_file_template, cmd->her_docs, envp);
+        int fd = open(final_file_template, O_RDONLY);
         if (fd < 0)
-            ft_err("open final heredoc temp file");
+        {
+            perror("open final heredoc temp file");
+            exit(EXIT_FAILURE);
+        }
         if (dup2(fd, STDIN_FILENO) < 0)
-            ft_err("dup2 heredoc");
+        {
+            perror("dup2 heredoc");
+            exit(EXIT_FAILURE);
+        }
         close(fd);
-        unlink(final_file);
+        unlink(final_file_template);
     }
     current = cmd->out_files;
-    if (current)
+    if (current && current->content)
     {
         while (current->next)
         {
@@ -53,7 +60,7 @@ static void handle_redirections(t_cmd *cmd, char **envp)
         handle_output_redirection((char *)current->content);
     }
     current = cmd->out_files_app;
-    if (current)
+    if (current && current->content)
     {
         while (current->next)
         {
@@ -68,7 +75,6 @@ void ignore()
 {
     printf("\n");
 }
-
 void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
 {
     pid_t pid;
@@ -94,27 +100,14 @@ void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
             close(pipefd[1]);
         }
         handle_redirections(cmd, envp);
-
-        if (is_builtin(cmd->cmd_args[0]))
-        {
-            execute_builtin(cmd->cmd_args);
-            // Exit the child process after executing the built-in
-            exit(0);
-        }
-        else
-        {
-            execve(cmd->cmd_path, cmd->cmd_args, envp);
-            ft_err("execve");
-        }
+        execve(cmd->cmd_path, cmd->cmd_args, envp);
+        // ft_exit("execve");
     }
     else if (pid < 0)
     {
-        perror("fork");
         signal(SIGINT, ignore);
+        // ft_exit("fork");
     }
-    if (pipefd[1] != -1)
-        close(pipefd[1]);
-    if (prev_pipe_out != -1)
-        close(prev_pipe_out);
+
     waitpid(pid, NULL, 0);
 }

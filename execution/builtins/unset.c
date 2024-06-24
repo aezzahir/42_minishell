@@ -31,8 +31,11 @@ void unset_env_var(char *var)
         print_unset_error("invalid variable name", var);
         return;
     }
+
     if (unsetenv(var) != 0)
+    {
         perror("unset");
+    }
 }
 
 void unset_env(char **vars)
@@ -44,3 +47,12 @@ void unset_env(char **vars)
         i++;
     }
 }
+
+void execute_command(const char *cmd)
+{
+    if (system(cmd) == -1)
+    {
+        perror("system");
+    }
+}
+

@@ -2,9 +2,7 @@
 
 int check_name(const char *name)
 {
-    int j ;
-    
-    j = 0;
+    int j = 0;
     while (name[j])
     {
         if (!ft_isalnum((int)name[j]) && name[j] != '_')
@@ -19,20 +17,14 @@ int check_name(const char *name)
 
 void export_single_var(char *var)
 {
-    int i;
-    int append;
-    char *name;
-    char *value;
-    char *old_value;
-    char *var_copy;
-
     if (ft_strchr(var, '=') == NULL)
     {
         print_error("invalid format", var);
         return;
     }
-    i = 0;
-    append = 0;
+
+    int i = 0;
+    int append = 0;
     while (var[i] && var[i] != '=' && var[i] != '+')
         i++;
     if (var[i] == '+' && var[i + 1] == '+')
@@ -46,30 +38,34 @@ void export_single_var(char *var)
         var[i] = '\0';
         i++;
     }
-    name = malloc(i + 1);
+
+    char *name = malloc(i + 1);
     if (name == NULL)
     {
         perror("export");
         return;
     }
     strncpy(name, var, i);
-    name[i] = '\0';
+    name[i] = '\0'; // Null-terminate the substring
+
     if (check_name(name) || is_number(name))
     {
         print_error("invalid identifier", name);
         free(name);
         return;
     }
-    value = ft_strdup(var + i + 1);
+
+    char *value = ft_strdup(var + i + 1);
     if (value == NULL)
     {
         perror("export");
         free(name);
         return;
     }
+
     if (append)
     {
-        old_value = getenv(name);
+        char *old_value = getenv(name);
         if (old_value)
         {
             char *new_value = malloc(ft_strlen(old_value) + ft_strlen(value) + 1);
@@ -85,7 +81,8 @@ void export_single_var(char *var)
             value = new_value;
         }
     }
-    var_copy = malloc(ft_strlen(name) + ft_strlen(value) + 2);
+
+    char *var_copy = malloc(ft_strlen(name) + ft_strlen(value) + 2);
     if (var_copy == NULL)
     {
         perror("export");
@@ -93,25 +90,30 @@ void export_single_var(char *var)
         free(value);
         return;
     }
+
     sprintf(var_copy, "%s=%s", name, value);
+
     if (putenv(var_copy) != 0)
     {
         perror("export");
         free(var_copy);
     }
+    // Do not free name and value here, as var_copy includes them
 }
 
 void export_env(char *vars)
 {
-    char *token;
-    char *rest;
-
     if (vars == NULL)
     {
         print_env_vars();
         return;
     }
-    rest = vars;
+
+    char *token;
+    char *rest = vars;
+
     while ((token = strtok_r(rest, " ", &rest)))
+    {
         export_single_var(token);
+    }
 }
