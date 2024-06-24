@@ -64,7 +64,7 @@ char *ft_expand_variable(char *token, char **envp)
             char *temp = ft_substr(token, i, 1);
             expanded_token = ft_strjoin_free(expanded_token, temp);
             free(temp);
-            expanded_token = ft_strjoin_free(expanded_token, "\'");
+            //expanded_token = ft_strjoin_free(expanded_token, "\'");
             i++;
         }
         else if (token[i] == '"' && !single_quote)
@@ -96,7 +96,7 @@ char *ft_expand_variable(char *token, char **envp)
             }
             else if (ft_isdigit(token[i + 1]))
                 i += 2;
-            else if (token[i + 1] == '"' || token[i + 1] == '\'')
+            else if ((token[i + 1] == '"' || token[i + 1] == '\'') && !double_quote)
                 i += 1;
             else
             {

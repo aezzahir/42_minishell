@@ -12,40 +12,36 @@ extern int	g_status;
 
 
 
-char *ft_remove_quotes(char *str)
+char *ft_remove_quotes(char *str) // remember  to free this str 
 {
     if (!str) return NULL;
 
-    char quote = '\0';
-    int read_pos = 0;
-    int write_pos = 0;
+    char quote;
+    int i = 0;
+    int j = 0;
     int in_quote = 0;
 
-    while (str[read_pos])
+    char *result = malloc(strlen(str) + 1);
+    if (!result) return NULL;
+    quote = '\0';
+    while (str[i])
     {
-        if (!in_quote && (str[read_pos] == '\'' || str[read_pos] == '"'))
+        if (!in_quote && (str[i] == '"' || str[i] == '\''))
         {
             in_quote = 1;
-            quote = str[read_pos];
+            quote = str[i];
         }
-        else if (in_quote && str[read_pos] == quote)
+        else if (in_quote && str[i] == quote)
         {
             in_quote = 0;
             quote = '\0';
         }
         else
-        {
-            if (read_pos != write_pos)
-            {
-                str[write_pos] = str[read_pos];
-            }
-            write_pos++;
-        }
-        read_pos++;
+            result[j++] = str[i];
+        i++;
     }
-
-    str[write_pos] = '\0';
-    return str;
+    result[j] = '\0';
+    return result;
 }
 
 void process_token(t_token *token)
@@ -61,24 +57,22 @@ void process_token(t_token *token)
     }
 }
 
-
 void ft_remove_quotes_from_tokens(t_list *tokens_list)
 {
-    t_list *current;
+    t_list *current = tokens_list;
     t_token *token;
-    char *unquoted_value;
 
-    current = tokens_list;
     while (current)
     {
         token = (t_token *)current->content;
 
         if (token->type == TOKEN_WORD)
         {
-            unquoted_value = ft_remove_quotes(token->value);
-            if (unquoted_value)
-                token->value = unquoted_value;
+            char *unquoted_value = ft_remove_quotes(token->value);
+            free(token->value);  // Free the original value
+            token->value = unquoted_value;  // Assign the new unquoted value
         }
+
         current = current->next;
     }
 }
