@@ -64,7 +64,6 @@ char *ft_expand_variable(char *token, char **envp)
             char *temp = ft_substr(token, i, 1);
             expanded_token = ft_strjoin_free(expanded_token, temp);
             free(temp);
-            //expanded_token = ft_strjoin_free(expanded_token, "\'");
             i++;
         }
         else if (token[i] == '"' && !single_quote)
