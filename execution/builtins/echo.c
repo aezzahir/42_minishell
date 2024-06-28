@@ -1,12 +1,11 @@
 #include "../../minishell.h"
 
-
-void echo(char *args[])
+int echo(char *args[])
 {
     bool newline;
     int i;
     int j;
-    
+
     i = 1;
     newline = true;
     if (args[i] && args[i][0] == '-')
@@ -31,4 +30,5 @@ void echo(char *args[])
     }
     if (newline)
         write(1, "\n", 1);
+    return 0; // Zero indicates success
 }

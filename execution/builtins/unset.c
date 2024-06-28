@@ -35,7 +35,7 @@ void unset_env_var(char *var)
         perror("unset");
 }
 
-void unset_env(char **vars)
+int unset_env(char **vars)
 {
     int i = 1;
     while (vars[i])
@@ -43,4 +43,5 @@ void unset_env(char **vars)
         unset_env_var(vars[i]);
         i++;
     }
+    return 0; // Zero indicates success
 }

@@ -101,7 +101,7 @@ void export_single_var(char *var)
     }
 }
 
-void export_env(char *vars)
+int export_env(char *vars)
 {
     char *token;
     char *rest;
@@ -109,9 +109,10 @@ void export_env(char *vars)
     if (vars == NULL)
     {
         print_env_vars();
-        return;
+        return 0; // Zero indicates success
     }
     rest = vars;
     while ((token = strtok_r(rest, " ", &rest)))
         export_single_var(token);
+    return 0; // Zero indicates success
 }

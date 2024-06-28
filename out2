@@ -1,0 +1,13 @@
+total 112
+-rw-r--r--@  1 benhajdahmaneilyes  staff   1286 Jun  8 17:17 Makefile
+drwxr-xr-x@ 13 benhajdahmaneilyes  staff    416 Jun 28 18:12 execution
+drwxr-xr-x@ 49 benhajdahmaneilyes  staff   1568 Jun 15 15:30 libft
+-rw-r--r--@  1 benhajdahmaneilyes  staff   1912 Jun  8 17:17 main.c
+-rw-r--r--@  1 benhajdahmaneilyes  staff   2608 Jun 28 18:12 main.o
+-rwxr-xr-x@  1 benhajdahmaneilyes  staff  35080 Jun 28 18:12 minishell
+-rw-r--r--@  1 benhajdahmaneilyes  staff   3154 Jun 11 09:53 minishell.h
+-rw-r--r--@  1 benhajdahmaneilyes  staff      0 Jun 28 18:13 out
+-rw-r--r--@  1 benhajdahmaneilyes  staff      0 Jun 28 18:13 out2
+drwxr-xr-x@ 15 benhajdahmaneilyes  staff    480 Jun 28 18:12 parsing
+-rwxr-xr-x@  1 benhajdahmaneilyes  staff   2163 Jun 11 09:53 parsing_test.sh
+drwxr-xr-x@  2 benhajdahmaneilyes  staff     64 Jun  5 18:11 test

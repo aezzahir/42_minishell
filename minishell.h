@@ -19,6 +19,7 @@
 #define TRUE 1
 #define FALSE 0
 
+extern int g_status;
 
 typedef struct s_prompt
 {
@@ -91,13 +92,13 @@ void handle_output_redirection(char *output_file);
 void handle_append_redirection(char *output_file);
 
 // builtins
-void cd(char *path);
-void echo(char *args[]);
-void env();
+int cd(char *path);
+int echo(char *args[]);
+int env();
 void exit_shell(char *arg);
-void export_env(char *var);
-void pwd();
-void unset_env(char **vars);
+int export_env(char *var);
+int pwd();
+int unset_env(char **vars);
 bool is_builtin(char *cmd);
 
 void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp);
