@@ -34,7 +34,8 @@ int ft_exec(t_list *cmds, char **envp)
             {
                 tmp = cmd->her_docs;
                 cmd->her_docs = cmd->her_docs->next;
-                free(tmp);
+                free(tmp->content);  // Free the dynamically allocated string content
+                free(tmp);           // Free the list node
             }
         }
         curr = curr->next;
@@ -128,12 +129,12 @@ void ft_pipe_exec(t_cmd *cmd, int *pipefd, int prev_pipe_out, char **envp)
 {
     pid_t pid;
 
-    if (is_builtin(cmd->cmd_args[0]))
-    {
-        execute_builtin(cmd->cmd_args);
-        return;  // Return to avoid fork if it's a builtin
-    }
 
+        if (is_builtin(cmd->cmd_args[0]))
+        {
+            execute_builtin(cmd->cmd_args);
+            return;  
+        }
     pid = fork();
     if (pid == 0)
     {

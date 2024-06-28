@@ -1,3 +1,5 @@
+
+
 #include "minishell.h"
 #include <signal.h>
 
@@ -6,7 +8,6 @@ int g_status;
 void ft_print_nodes(void *content)
 {
     (void)((char *)content);
-    // printf("%s, ", (char *)content);
 }
 
 void ft_print_prompt(void *content)
@@ -70,17 +71,14 @@ int main(int argc, char **argv, char *envp[])
         cmd_line = readline(prompt_str);
         if (!cmd_line)
         {
-            break; // Exit loop on EOF (Ctrl+D)
+            break; 
         }
         if (ft_strlen(cmd_line))
         {
             add_history(cmd_line);
             ft_split_tokens(&tokens_list, cmd_line, envp);
-            //ft_lstiter(tokens_list, ft_print_nodes);
-            // printf("\n");
             cmds = get_cmds_list(tokens_list, envp);
             ft_exec(cmds, envp);
-            // ft_lstiter(cmds, ft_print_prompt);
             ft_lstclear(&tokens_list, free);
         }
         free(cmd_line);

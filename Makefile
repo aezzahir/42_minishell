@@ -18,15 +18,16 @@ SRC_FILES = main.c \
 			execution/builtins/pwd.c \
 			execution/builtins/unset.c \
 			execution/redirections.c \
+			parsing/1-split_tokens.c \
+			parsing/ft_free.c \
+			parsing/ft_substrdup.c \
+			parsing/utils.c \
+			parsing/handle_specials/ft_handle_env_variables.c \
 			parsing/handle_specials/ft_handle_herdoc.c \
 			parsing/handle_specials/ft_handle_quotes.c \
-			parsing/handle_specials/handle_syntax_errors.c \
-			parsing/1-split_tokens.c \
 			parsing/2-parse_cmds.c \
 			parsing/2_get_cmd_path.c \
-			parsing/free_split.c \
-			parsing/ft_substrdup.c \
-			parsing/utils.c
+			parsing/handle_specials/handle_syntax_errors.c \
 
 OBJ_FILES = $(SRC_FILES:%.c=%.o)
 

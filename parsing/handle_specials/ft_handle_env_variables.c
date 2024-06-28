@@ -7,98 +7,111 @@ extern int	g_status;
  * @envp: Environment variables array
  * @return: Token with environment variables replaced
  */
-char *ft_exit_status(char *token);
-char *ft_handle_envar(char *token, char **envp)
+char *ft_strjoin_free(char *s1, char *s2)
 {
-    int i = 0;
-    int start = 0;
-    int end = 0;
-    char *var_name;
-    char *var_value;
-    char *left;
-    char *right;
-    char *new_token = NULL;
-    (void)envp;
-    if (!token)
+    size_t len1 = ft_strlen(s1);
+    size_t len2 = ft_strlen(s2);
+    char *result = malloc(len1 + len2 + 1);
+    if (result == NULL)
         return NULL;
-    while (token[i]) {
-        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && ft_isalnum(token[i + 1]))
-        {
-            start = i + 1;
-            end = start;
-            if (ft_isdigit(token[end]))
-                end++;
-            else
-                while (ft_isalnum(token[end]))
-                    end++;
-            
-            i = ft_strlen(token) - end;
-            var_name = ft_substr(token, start, end - start);
-            var_value = getenv(var_name);
-            free(var_name);
-            left = ft_substr(token, 0, start - 1);
-            right = ft_substr(token, end, ft_strlen(token) - end);
-            new_token = ft_strjoin(left, var_value);
-            new_token = ft_strjoin(new_token, right);
-            free(left);
-            free(right);
-            free(token);
-            token = new_token;
-            i = ft_strlen(token) - i - 1;
-        }
-        else if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && (token[i + 1] == '"' || token[i + 1] == '\''))
-        {
-            start = i + 1;
-            end = start;
-            left = ft_substr(token, 0, start - 1);
-            right = ft_substr(token, end, ft_strlen(token) - end);
-            new_token = ft_strjoin(left, right);
-            free(left);
-            free(right);
-            free(token);
-            token = new_token;
-            start = 0;
-            end = 0;
-        }
-        i++;
-    }
-
-    return ft_exit_status(token);
+    ft_memcpy(result, s1, len1);
+    ft_memcpy(result + len1, s2, len2 + 1);
+    free(s1);
+    return result;
 }
 
-char *ft_exit_status(char *token)
+void ft_expand_variables(t_list *tokens_list, char **envp)
+{
+    t_list *current = tokens_list;
+    while (current != NULL) {
+        t_token *token = (t_token *)current->content;
+        if (token->type == TOKEN_WORD && strchr(token->value, '$') != NULL) {
+            char *expanded_value = ft_expand_variable(token->value, envp);
+            free(token->value);
+            token->value = expanded_value;
+        }
+        current = current->next;
+    }
+}
+
+
+char *ft_getenv(char *var_name, char **envp)
 {
     int i = 0;
-    int start = 0;
-    int end = 0;
-    char *left;
-    char *right;
-    char *new_token = NULL;
+    int var_len = ft_strlen(var_name);
 
-    if (!token)
-        return NULL;
+    while (envp[i])
+    {
+        if (ft_strncmp(envp[i], var_name, var_len) == 0 && envp[i][var_len] == '=')
+            return envp[i] + var_len + 1;
+        i++;
+    }
+    return NULL;
+}
+
+char *ft_expand_variable(char *token, char **envp)
+{
+    int i = 0;
+    int single_quote = 0;
+    int double_quote = 0;
+    char *expanded_token = ft_strdup("");
 
     while (token[i])
     {
-        if (token[i] == '$' && !ft_in_quote(token, &token[i]) && token[i + 1] && token[i + 1] == '?')
+        if (token[i] == '\'' && !double_quote)
         {
-            start = i;
-            end = i + 2;
-
-            left = ft_substr(token, 0, start);
-            right = ft_substr(token, end, ft_strlen(token) - end);
-            
-            char *exit_status = ft_itoa(g_status);
-            new_token = ft_strjoin(left, exit_status);
-            new_token = ft_strjoin(new_token, right);
-            free(left);
-            free(right);
-            free(token);
-            token = new_token;
-            i = start + ft_strlen(exit_status);
-            free(exit_status);
+            single_quote = !single_quote;
+            char *temp = ft_substr(token, i, 1);
+            expanded_token = ft_strjoin_free(expanded_token, temp);
+            free(temp);
+            i++;
         }
-        i++;
+        else if (token[i] == '"' && !single_quote)
+        {
+            double_quote = !double_quote;
+            expanded_token = ft_strjoin_free(expanded_token, "\"");
+            i++;
+        }
+        else if (token[i] == '$' && !single_quote)
+        {
+            if (token[i + 1] == '?')
+            {
+                char *exit_status = ft_itoa(g_status);
+                expanded_token = ft_strjoin_free(expanded_token, exit_status);
+                free(exit_status);
+                i += 2;
+            }
+            else if (ft_isalpha(token[i + 1]) || token[i + 1] == '_')
+            {
+                int k = i + 1;
+                while (ft_isalnum(token[k]) || token[k] == '_')
+                    k++;
+                char *var_name = ft_substr(token, i + 1, k - i - 1);
+                char *var_value = ft_getenv(var_name, envp);
+                if (var_value)
+                    expanded_token = ft_strjoin_free(expanded_token, var_value);
+                free(var_name);
+                i = k;
+            }
+            else if (ft_isdigit(token[i + 1]))
+                i += 2;
+            else if ((token[i + 1] == '"' || token[i + 1] == '\'') && !double_quote)
+                i += 1;
+            else
+            {
+                char *temp = ft_substr(token, i, 1);
+                expanded_token = ft_strjoin_free(expanded_token, temp);
+                free(temp);
+                i++;
+            }
+        }
+        else
+        {
+            char *temp = ft_substr(token, i, 1);
+            expanded_token = ft_strjoin_free(expanded_token, temp);
+            free(temp);
+            i++;
+        }
     }
-    return token;
+    return expanded_token;
 }
