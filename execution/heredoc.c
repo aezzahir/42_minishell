@@ -27,7 +27,7 @@ void handle_heredoc(char *delimiter, char *tmp_file, int remove_tabs, char **env
             break;
         }
         if (quoted_delim)
-            line = ft_handle_envar(line, envp);
+            line = ft_expand_variable (line, envp);
         tmp = line;
         if (remove_tabs)
         {
